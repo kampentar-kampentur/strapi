@@ -1,0 +1,26 @@
+{
+  "kind": "singleType",
+  "collectionName": "tv_sizes",
+  "info": {
+    "singularName": "tv-size",
+    "pluralName": "tv-sizes",
+    "displayName": "TVSize"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "text"
+    },
+    "tvsizes": {
+      "type": "component",
+      "component": "tvsizes.tvsizes",
+      "repeatable": true
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_badges_badges",
+  "info": {
+    "displayName": "Badges",
+    "icon": "bulletList"
+  },
+  "options": {},
+  "attributes": {
+    "Badge": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "alt": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}
