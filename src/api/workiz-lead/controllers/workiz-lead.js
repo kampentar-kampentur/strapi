@@ -76,15 +76,21 @@ module.exports = {
             tvSizeExtraNotes.push(`${key}: ${value}`);
           }
         });
-        tvs.forEach((tv, idx) => {
-          const mount = rest[`mounting-${idx+1}`];
-          if (mount) {
-            installArr.push({
-              'TV Size': tv.label,
-              'Mount Type': mount.mountType || '',
-              'Wall Type': mount.wallType || '',
-              'Wires': mount.wires || ''
-            });
+        // Новый алгоритм соответствия mounting-X и tvSelection с учётом count
+        let mountingIdx = 1;
+        tvs.forEach((tv) => {
+          const count = Number(tv.count) || 1;
+          for (let i = 0; i < count; i++) {
+            const mount = rest[`mounting-${mountingIdx}`];
+            if (mount) {
+              installArr.push({
+                'TV Size': tv.label,
+                'Mount Type': mount.mountType || '',
+                'Wall Type': mount.wallType || '',
+                'Wires': mount.wires || ''
+              });
+            }
+            mountingIdx++;
           }
         });
         if (installArr.length) {

@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "galler_photos",
+  "info": {
+    "singularName": "galler-photo",
+    "pluralName": "galler-photos",
+    "displayName": "Galler Photos",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "type": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  }
+}

@@ -396,6 +396,67 @@ export interface ApiCtaCta extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiGallerPhotoGallerPhoto extends Struct.CollectionTypeSchema {
+  collectionName: 'galler_photos';
+  info: {
+    description: '';
+    displayName: 'Galler Photos';
+    pluralName: 'galler-photos';
+    singularName: 'galler-photo';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::galler-photo.galler-photo'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    type: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiGalleryOfWorkGalleryOfWork extends Struct.SingleTypeSchema {
+  collectionName: 'gallery_of_works';
+  info: {
+    description: '';
+    displayName: 'Gallery Of Work';
+    pluralName: 'gallery-of-works';
+    singularName: 'gallery-of-work';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::gallery-of-work.gallery-of-work'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    subTitle: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
+    types: Schema.Attribute.Component<'gallery.types', true>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiHeroTextLineHeroTextLine
   extends Struct.CollectionTypeSchema {
   collectionName: 'hero_text_lines';
@@ -454,6 +515,40 @@ export interface ApiHeroHero extends Struct.SingleTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     video: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+  };
+}
+
+export interface ApiOurServiceOurService extends Struct.SingleTypeSchema {
+  collectionName: 'our_services';
+  info: {
+    description: '';
+    displayName: 'Our Services';
+    pluralName: 'our-services';
+    singularName: 'our-service';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::our-service.our-service'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    services: Schema.Attribute.Component<
+      'our-services.our-service-component',
+      true
+    >;
+    subTitle: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -997,8 +1092,11 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::cta.cta': ApiCtaCta;
+      'api::galler-photo.galler-photo': ApiGallerPhotoGallerPhoto;
+      'api::gallery-of-work.gallery-of-work': ApiGalleryOfWorkGalleryOfWork;
       'api::hero-text-line.hero-text-line': ApiHeroTextLineHeroTextLine;
       'api::hero.hero': ApiHeroHero;
+      'api::our-service.our-service': ApiOurServiceOurService;
       'api::tv-size.tv-size': ApiTvSizeTvSize;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

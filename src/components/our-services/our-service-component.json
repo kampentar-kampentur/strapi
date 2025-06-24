@@ -1,21 +1,21 @@
 {
-  "collectionName": "components_tvsizes_tvsizes",
+  "collectionName": "components_our_services_our_service_components",
   "info": {
-    "displayName": "tvsizes",
-    "icon": "bulletList",
+    "displayName": "OurServiceComponent",
+    "icon": "car",
     "description": ""
   },
   "options": {},
   "attributes": {
     "title": {
-      "type": "string"
+      "type": "text"
     },
     "description": {
-      "type": "string"
+      "type": "text"
     },
     "image": {
       "type": "media",
-      "multiple": true,
+      "multiple": false,
       "required": false,
       "allowedTypes": [
         "images",
@@ -23,7 +23,9 @@
         "videos",
         "audios"
       ]
+    },
+    "label": {
+      "type": "text"
     }
-  },
-  "config": {}
+  }
 }

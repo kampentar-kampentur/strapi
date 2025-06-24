@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_gallery_types",
+  "info": {
+    "displayName": "types",
+    "icon": "apps"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    }
+  }
+}

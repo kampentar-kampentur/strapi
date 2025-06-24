@@ -1,0 +1,27 @@
+{
+  "kind": "singleType",
+  "collectionName": "gallery_of_works",
+  "info": {
+    "singularName": "gallery-of-work",
+    "pluralName": "gallery-of-works",
+    "displayName": "Gallery Of Work",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "text"
+    },
+    "types": {
+      "displayName": "types",
+      "type": "component",
+      "repeatable": true,
+      "component": "gallery.types"
+    }
+  }
+}
