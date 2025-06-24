@@ -16,9 +16,19 @@ module.exports = ({ env }) => ({
       upload: {
         resource_type: 'auto', // Поддержка видео
       },
+      eager: [
+        {
+          width: 300,
+          height: 200,
+          crop: 'fill',
+          format: 'jpg',
+          resource_type: 'video' // для видео превью
+        }
+      ],
       uploadStream: {
         resource_type: 'auto',
       },
+      delete: {},
     },
   },
   },
