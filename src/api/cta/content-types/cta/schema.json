@@ -4,7 +4,8 @@
   "info": {
     "singularName": "cta",
     "pluralName": "ctas",
-    "displayName": "CTA"
+    "displayName": "CTA",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -18,6 +19,9 @@
       "type": "string"
     },
     "email": {
+      "type": "string"
+    },
+    "phoneLabel": {
       "type": "string"
     }
   }

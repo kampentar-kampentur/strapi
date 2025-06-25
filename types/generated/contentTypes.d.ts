@@ -372,6 +372,7 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
 export interface ApiCtaCta extends Struct.SingleTypeSchema {
   collectionName: 'ctas';
   info: {
+    description: '';
     displayName: 'CTA';
     pluralName: 'ctas';
     singularName: 'cta';
@@ -388,6 +389,7 @@ export interface ApiCtaCta extends Struct.SingleTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::cta.cta'> &
       Schema.Attribute.Private;
     phone: Schema.Attribute.String;
+    phoneLabel: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
