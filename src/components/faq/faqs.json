@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_faq_faqs",
+  "info": {
+    "displayName": "faqs",
+    "icon": "apps",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "question": {
+      "type": "text"
+    },
+    "answer": {
+      "type": "text"
+    }
+  }
+}

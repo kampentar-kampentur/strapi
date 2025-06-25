@@ -1,0 +1,25 @@
+{
+  "kind": "singleType",
+  "collectionName": "why_customers_choose_uses",
+  "info": {
+    "singularName": "why-customers-choose-us",
+    "pluralName": "why-customers-choose-uses",
+    "displayName": "Why Customers Choose Us"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "text"
+    },
+    "cards": {
+      "type": "component",
+      "repeatable": true,
+      "component": "tvsizes.tvsizes"
+    }
+  }
+}

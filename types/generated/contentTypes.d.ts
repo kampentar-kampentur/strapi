@@ -369,6 +369,72 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAboutUsAboutUs extends Struct.SingleTypeSchema {
+  collectionName: 'about_uses';
+  info: {
+    displayName: 'About Us';
+    pluralName: 'about-uses';
+    singularName: 'about-us';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::about-us.about-us'
+    > &
+      Schema.Attribute.Private;
+    mainTextLeft: Schema.Attribute.Text;
+    mainTextRight: Schema.Attribute.Text;
+    publishedAt: Schema.Attribute.DateTime;
+    subTitle: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiContactUsContactUs extends Struct.SingleTypeSchema {
+  collectionName: 'contact_uses';
+  info: {
+    displayName: 'Contact Us';
+    pluralName: 'contact-uses';
+    singularName: 'contact-us';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    facebook: Schema.Attribute.String;
+    instagram: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::contact-us.contact-us'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    subTitle: Schema.Attribute.Text;
+    thumbtack: Schema.Attribute.String;
+    tiktok: Schema.Attribute.String;
+    title: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    yelp: Schema.Attribute.String;
+    youtube: Schema.Attribute.String;
+  };
+}
+
 export interface ApiCtaCta extends Struct.SingleTypeSchema {
   collectionName: 'ctas';
   info: {
@@ -395,6 +461,63 @@ export interface ApiCtaCta extends Struct.SingleTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     workHours: Schema.Attribute.String;
+  };
+}
+
+export interface ApiCustomerReviewCustomerReview
+  extends Struct.SingleTypeSchema {
+  collectionName: 'customer_reviews';
+  info: {
+    displayName: 'Customer Reviews';
+    pluralName: 'customer-reviews';
+    singularName: 'customer-review';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::customer-review.customer-review'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    subTitle: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiFaqFaq extends Struct.SingleTypeSchema {
+  collectionName: 'faqs';
+  info: {
+    displayName: 'FAQ';
+    pluralName: 'faqs';
+    singularName: 'faq';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    faqs: Schema.Attribute.Component<'faq.faqs', true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::faq.faq'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    subTitle: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -554,6 +677,39 @@ export interface ApiOurServiceOurService extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiTvMountingTypeTvMountingType
+  extends Struct.SingleTypeSchema {
+  collectionName: 'tv_mounting_types';
+  info: {
+    description: '';
+    displayName: 'TV Mounting Types';
+    pluralName: 'tv-mounting-types';
+    singularName: 'tv-mounting-type';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    addons: Schema.Attribute.Component<'tv-mounting-types.add-ons', true>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::tv-mounting-type.tv-mounting-type'
+    > &
+      Schema.Attribute.Private;
+    mountingTypes: Schema.Attribute.Component<'tvsizes.tvsizes', true>;
+    publishedAt: Schema.Attribute.DateTime;
+    subTitle: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiTvSizeTvSize extends Struct.SingleTypeSchema {
   collectionName: 'tv_sizes';
   info: {
@@ -578,6 +734,37 @@ export interface ApiTvSizeTvSize extends Struct.SingleTypeSchema {
     subTitle: Schema.Attribute.Text;
     title: Schema.Attribute.Text;
     tvsizes: Schema.Attribute.Component<'tvsizes.tvsizes', true>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiWhyCustomersChooseUsWhyCustomersChooseUs
+  extends Struct.SingleTypeSchema {
+  collectionName: 'why_customers_choose_uses';
+  info: {
+    displayName: 'Why Customers Choose Us';
+    pluralName: 'why-customers-choose-uses';
+    singularName: 'why-customers-choose-us';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    cards: Schema.Attribute.Component<'tvsizes.tvsizes', true>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::why-customers-choose-us.why-customers-choose-us'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    subTitle: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1093,13 +1280,19 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::about-us.about-us': ApiAboutUsAboutUs;
+      'api::contact-us.contact-us': ApiContactUsContactUs;
       'api::cta.cta': ApiCtaCta;
+      'api::customer-review.customer-review': ApiCustomerReviewCustomerReview;
+      'api::faq.faq': ApiFaqFaq;
       'api::galler-photo.galler-photo': ApiGallerPhotoGallerPhoto;
       'api::gallery-of-work.gallery-of-work': ApiGalleryOfWorkGalleryOfWork;
       'api::hero-text-line.hero-text-line': ApiHeroTextLineHeroTextLine;
       'api::hero.hero': ApiHeroHero;
       'api::our-service.our-service': ApiOurServiceOurService;
+      'api::tv-mounting-type.tv-mounting-type': ApiTvMountingTypeTvMountingType;
       'api::tv-size.tv-size': ApiTvSizeTvSize;
+      'api::why-customers-choose-us.why-customers-choose-us': ApiWhyCustomersChooseUsWhyCustomersChooseUs;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

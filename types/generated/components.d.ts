@@ -15,6 +15,19 @@ export interface BadgesBadges extends Struct.ComponentSchema {
   };
 }
 
+export interface FaqFaqs extends Struct.ComponentSchema {
+  collectionName: 'components_faq_faqs';
+  info: {
+    description: '';
+    displayName: 'faqs';
+    icon: 'apps';
+  };
+  attributes: {
+    answer: Schema.Attribute.Text;
+    question: Schema.Attribute.Text;
+  };
+}
+
 export interface GalleryTypes extends Struct.ComponentSchema {
   collectionName: 'components_gallery_types';
   info: {
@@ -42,6 +55,16 @@ export interface OurServicesOurServiceComponent extends Struct.ComponentSchema {
   };
 }
 
+export interface TvMountingTypesAddOns extends Struct.ComponentSchema {
+  collectionName: 'components_tv_mounting_types_add_ons';
+  info: {
+    displayName: 'Add-Ons';
+  };
+  attributes: {
+    label: Schema.Attribute.String;
+  };
+}
+
 export interface TvsizesTvsizes extends Struct.ComponentSchema {
   collectionName: 'components_tvsizes_tvsizes';
   info: {
@@ -51,10 +74,7 @@ export interface TvsizesTvsizes extends Struct.ComponentSchema {
   };
   attributes: {
     description: Schema.Attribute.String;
-    image: Schema.Attribute.Media<
-      'images' | 'files' | 'videos' | 'audios',
-      true
-    >;
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     title: Schema.Attribute.String;
   };
 }
@@ -63,8 +83,10 @@ declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'badges.badges': BadgesBadges;
+      'faq.faqs': FaqFaqs;
       'gallery.types': GalleryTypes;
       'our-services.our-service-component': OurServicesOurServiceComponent;
+      'tv-mounting-types.add-ons': TvMountingTypesAddOns;
       'tvsizes.tvsizes': TvsizesTvsizes;
     }
   }

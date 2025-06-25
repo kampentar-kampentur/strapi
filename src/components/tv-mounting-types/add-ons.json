@@ -1,0 +1,12 @@
+{
+  "collectionName": "components_tv_mounting_types_add_ons",
+  "info": {
+    "displayName": "Add-Ons"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string"
+    }
+  }
+}

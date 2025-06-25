@@ -1,0 +1,20 @@
+{
+  "kind": "singleType",
+  "collectionName": "customer_reviews",
+  "info": {
+    "singularName": "customer-review",
+    "pluralName": "customer-reviews",
+    "displayName": "Customer Reviews"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "text"
+    }
+  }
+}
