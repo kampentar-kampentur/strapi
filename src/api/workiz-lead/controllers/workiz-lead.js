@@ -3,10 +3,6 @@
 const axios = require('axios');
 const Table = require('cli-table3');
 
-/**
- * A set of functions called "actions" for `workiz-lead`
- */
-
 const apiToken = process.env.WORKIZ_API_TOKEN;
 const authSecret = process.env.WORKIZ_AUTH_SECRET;
 const baseApiUrl = apiToken ? `https://api.workiz.com/api/v1/${apiToken}` : '';
@@ -17,7 +13,7 @@ module.exports = {
       if (!apiToken || !authSecret) {
         return ctx.internalServerError('Workiz API credentials are not set in environment variables.');
       }
-      const { phone, name } = ctx.request.body.data;
+      const { phone, name, email, address, zip } = ctx.request.body.data;
       if (!phone || !name) {
         return ctx.badRequest('Missing "phone" or "name" in request body');
       }
@@ -35,6 +31,9 @@ module.exports = {
         "JobSource": "Google",
         "CreatedBy": "WebSite",
       };
+      if (email) leadData.Email = email;
+      if (address) leadData.Address = address;
+      if (zip) leadData.PostalCode = zip;
 
       const response = await axios.post(`${baseApiUrl}/lead/create/`, leadData);
 
@@ -59,24 +58,22 @@ module.exports = {
         return ctx.badRequest('Missing contactInfo (name or phone) in request body');
       }
       const { contactInfo, ...rest } = data;
-      const { phone, name } = contactInfo;
+      const { phone, name, email, address, zip } = contactInfo;
       const nameParts = name.trim().split(/\s+/);
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || 'CostumField';
 
-      // Формируем таблицу установок
       let installTable = '';
       let tvSizeExtraNotes = [];
       if (rest['tv-size'] && Array.isArray(rest['tv-size'].tvSelection)) {
         const tvs = rest['tv-size'].tvSelection;
         const installArr = [];
-        // Собираем дополнительные поля из tv-size кроме tvSelection
         Object.entries(rest['tv-size']).forEach(([key, value]) => {
           if (key !== 'tvSelection') {
             tvSizeExtraNotes.push(`${key}: ${value}`);
           }
         });
-        // Новый алгоритм соответствия mounting-X и tvSelection с учётом count
+
         let mountingIdx = 1;
         tvs.forEach((tv) => {
           const count = Number(tv.count) || 1;
@@ -98,7 +95,6 @@ module.exports = {
         }
       }
 
-      // Плоский формат дополнительных сервисов
       let additionalNotes = [];
       Object.entries(rest).forEach(([key, value]) => {
         if (key.startsWith('mounting') || key === 'tv-size') return;
@@ -146,6 +142,9 @@ module.exports = {
         "CreatedBy": "WebSite",
         "LeadNotes": leadNotes,
       };
+      if (email) leadData.Email = email;
+      if (address) leadData.Address = address;
+      if (zip) leadData.PostalCode = zip;
 
       const response = await axios.post(`${baseApiUrl}/lead/create/`, leadData);
 
