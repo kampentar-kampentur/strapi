@@ -27,9 +27,9 @@ module.exports = {
         "Phone": phone,
         "FirstName": firstName,
         "LastName": lastName,
-        "JobType": "add",
+        "JobType": "Service",
         "JobSource": "Google",
-        "CreatedBy": "WebSite",
+        "CreatedBy": "Artur Holosnyi",
       };
       if (email) leadData.Email = email;
       if (address) leadData.Address = address;
@@ -44,7 +44,7 @@ module.exports = {
       });
     } catch (error) {
       strapi.log.error('Error sending lead to Workiz:', error);
-      ctx.internalServerError('An error occurred while sending the lead to Workiz.', { error: error.message });
+      ctx.internalServerError('An error occurred while sending the lead to Workiz.', { error: error });
     }
   },
 
@@ -137,9 +137,9 @@ module.exports = {
         "Phone": phone,
         "FirstName": firstName,
         "LastName": lastName,
-        "JobType": "add",
+        "JobType": "Service",
         "JobSource": "Google",
-        "CreatedBy": "WebSite",
+        "CreatedBy": "Artur Holosnyi",
         "LeadNotes": leadNotes,
       };
       if (email) leadData.Email = email;
