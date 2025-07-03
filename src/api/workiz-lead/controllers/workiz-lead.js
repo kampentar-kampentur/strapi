@@ -21,7 +21,6 @@ module.exports = {
       const nameParts = name.trim().split(/\s+/);
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || 'CostumField';
-
       const leadData = {
         "auth_secret": authSecret,
         "Phone": phone,
@@ -63,75 +62,7 @@ module.exports = {
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || 'CostumField';
 
-      let installTable = '';
-      let tvSizeExtraNotes = [];
-      if (rest['tv-size'] && Array.isArray(rest['tv-size'].tvSelection)) {
-        const tvs = rest['tv-size'].tvSelection;
-        const installArr = [];
-        Object.entries(rest['tv-size']).forEach(([key, value]) => {
-          if (key !== 'tvSelection') {
-            tvSizeExtraNotes.push(`${key}: ${value}`);
-          }
-        });
-
-        let mountingIdx = 1;
-        tvs.forEach((tv) => {
-          const count = Number(tv.count) || 1;
-          for (let i = 0; i < count; i++) {
-            const mount = rest[`mounting-${mountingIdx}`];
-            if (mount) {
-              installArr.push({
-                'TV Size': tv.label,
-                'Mount Type': mount.mountType || '',
-                'Wall Type': mount.wallType || '',
-                'Wires': mount.wires || ''
-              });
-            }
-            mountingIdx++;
-          }
-        });
-        if (installArr.length) {
-          installTable = arrayToCliTableText(installArr);
-        }
-      }
-
-      let additionalNotes = [];
-      Object.entries(rest).forEach(([key, value]) => {
-        if (key.startsWith('mounting') || key === 'tv-size') return;
-        if (typeof value === 'object' && value !== null) {
-          Object.entries(value).forEach(([subKey, subVal]) => {
-            if (Array.isArray(subVal)) {
-              subVal.forEach(item => {
-                if (item.value && item.label) {
-                  let note = `${item.label} (${item.value})`;
-                  if (item.count && Number(item.count) > 1) {
-                    note += ` x${item.count}`;
-                  }
-                  additionalNotes.push(note);
-                }
-              });
-            } else if (subVal && subVal.value && subVal.label) {
-              let note = `${subVal.label} (${subVal.value})`;
-              if (subVal.count && Number(subVal.count) > 1) {
-                note += ` x${subVal.count}`;
-              }
-              additionalNotes.push(note);
-            }
-          });
-        }
-      });
-
-      let leadNotes = '';
-      if (installTable) {
-        leadNotes += 'Installations:\n' + installTable + '\n';
-      }
-      if (tvSizeExtraNotes.length) {
-        leadNotes += '\nTV Size Extra:\n' + tvSizeExtraNotes.join(', ') + '\n';
-      }
-      if (additionalNotes.length) {
-        leadNotes += '\nAdditional Services:\n' + additionalNotes.join(', ');
-      }
-
+      // 1. Создаём лид
       const leadData = {
         "auth_secret": authSecret,
         "Phone": phone,
@@ -140,22 +71,102 @@ module.exports = {
         "JobType": "Service",
         "JobSource": "Google",
         "CreatedBy": "Artur Holosnyi",
-        "LeadNotes": leadNotes,
       };
       if (email) leadData.Email = email;
       if (address) leadData.Address = address;
       if (zip) leadData.PostalCode = zip;
 
-      const response = await axios.post(`${baseApiUrl}/lead/create/`, leadData);
+      const leadResponse = await axios.post(`${baseApiUrl}/lead/create/`, leadData);
+      const workizLead = leadResponse.data && leadResponse.data.data && Array.isArray(leadResponse.data.data) ? leadResponse.data.data[0] : null;
+      if (!workizLead) {
+        strapi.log.error('Workiz lead response malformed:', leadResponse.data);
+        return ctx.internalServerError('Workiz lead response malformed.');
+      }
+      const { UUID, ClientId } = workizLead;
 
+      // 2. Создаём смету (estimate)
+      // Формируем дату в формате 'YYYY-MM-DD H:mm'
+      const now = new Date();
+      const pad = n => n < 10 ? '0' + n : n;
+      const createdStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${now.getHours()}:${pad(now.getMinutes())}`;
+      const estimateCreateRes = await axios.post(`${baseApiUrl}/estimate/create/`, {
+        auth_secret: authSecret,
+        ClientId,
+        UUID,
+        Name: firstName + ' ' + lastName,
+        Description: '',
+        Created: createdStr,
+      });
+      const estimateId = estimateCreateRes?.data?.data ;
+      if (!estimateId) {
+        strapi.log.error('Workiz estimate create response malformed:', estimateCreateRes.data);
+        return ctx.internalServerError('Workiz estimate create response malformed.');
+      }
+
+      // 3. Собираем все value+count из формы
+      const valueCountPairs = [];
+      // tv-size.tvSelection
+      if (rest['tv-size'] && Array.isArray(rest['tv-size'].tvSelection)) {
+        rest['tv-size'].tvSelection.forEach(tv => {
+          if (tv.value) valueCountPairs.push({ value: tv.value, count: Number(tv.count) || 1 });
+        });
+      }
+      // additional-services
+      if (rest['additional-services'] && typeof rest['additional-services'] === 'object') {
+        Object.values(rest['additional-services']).forEach(arr => {
+          if (Array.isArray(arr)) {
+            arr.forEach(item => {
+              if (item.value) valueCountPairs.push({ value: item.value, count: Number(item.count) || 1 });
+            });
+          }
+        });
+      }
+      // mounting-X (динамические шаги для каждого телевизора)
+      if (rest['tv-size'] && Array.isArray(rest['tv-size'].tvSelection)) {
+        let mountingIdx = 1;
+        rest['tv-size'].tvSelection.forEach(tv => {
+          const count = Number(tv.count) || 1;
+          for (let i = 0; i < count; i++) {
+            const mount = rest[`mounting-${mountingIdx}`];
+            if (mount) {
+              ['mountType', 'wallType', 'wires'].forEach(field => {
+                if (mount[field]) {
+                  valueCountPairs.push({ value: mount[field], count: 1 });
+                }
+              });
+            }
+            mountingIdx++;
+          }
+        });
+      }
+
+      // 4. Достаём workizId из price-map по value
+      const priceMapItems = await strapi.db.query('api::price-map.price-map').findMany();
+      const lineItems = [];
+      valueCountPairs.forEach(({ value, count }) => {
+        const priceMap = priceMapItems.find(p => p.value === value);
+        if (priceMap && priceMap.workizId) {
+          lineItems.push({ Id: priceMap.workizId.toString(), Qty: count });
+        }
+      });
+
+      // 5. Добавляем line items в estimate
+      if (lineItems.length > 0) {
+        await axios.post(`${baseApiUrl}/estimate/addLineItems/`, {
+          auth_secret: authSecret,
+          Id: estimateId.toString(),
+          LineItems: lineItems,
+        });
+      }
+
+      // 6. Возвращаем только ответ createLead
       ctx.send({
         ok: true,
         message: 'Lead sent to Workiz successfully.',
-        workizResponse: response.data,
-        leadNotes,
+        workizResponse: leadResponse.data,
       });
     } catch (error) {
-      strapi.log.error('Error sending bestQuote lead to Workiz:', error);
+      strapi.log.error('Error in bestQuote:', error && error.response ? error.response.data : error);
       ctx.internalServerError('An error occurred while sending the bestQuote lead to Workiz.', { error: error.message });
     }
   }

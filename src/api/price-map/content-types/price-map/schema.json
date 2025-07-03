@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "price_maps",
+  "info": {
+    "singularName": "price-map",
+    "pluralName": "price-maps",
+    "displayName": "Price Map"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "value": {
+      "type": "string"
+    },
+    "workizId": {
+      "type": "integer"
+    },
+    "category": {
+      "type": "string"
+    },
+    "price": {
+      "type": "decimal"
+    },
+    "label": {
+      "type": "string"
+    }
+  }
+}

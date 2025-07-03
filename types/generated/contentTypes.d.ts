@@ -677,6 +677,38 @@ export interface ApiOurServiceOurService extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiPriceMapPriceMap extends Struct.CollectionTypeSchema {
+  collectionName: 'price_maps';
+  info: {
+    displayName: 'Price Map';
+    pluralName: 'price-maps';
+    singularName: 'price-map';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    category: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    label: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::price-map.price-map'
+    > &
+      Schema.Attribute.Private;
+    price: Schema.Attribute.Decimal;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    value: Schema.Attribute.String;
+    workizId: Schema.Attribute.Integer;
+  };
+}
+
 export interface ApiTvMountingTypeTvMountingType
   extends Struct.SingleTypeSchema {
   collectionName: 'tv_mounting_types';
@@ -1290,6 +1322,7 @@ declare module '@strapi/strapi' {
       'api::hero-text-line.hero-text-line': ApiHeroTextLineHeroTextLine;
       'api::hero.hero': ApiHeroHero;
       'api::our-service.our-service': ApiOurServiceOurService;
+      'api::price-map.price-map': ApiPriceMapPriceMap;
       'api::tv-mounting-type.tv-mounting-type': ApiTvMountingTypeTvMountingType;
       'api::tv-size.tv-size': ApiTvSizeTvSize;
       'api::why-customers-choose-us.why-customers-choose-us': ApiWhyCustomersChooseUsWhyCustomersChooseUs;

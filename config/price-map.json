@@ -1,0 +1,40 @@
+[
+  { "value": "upTo31", "workizId": 1003, "category": "tvSelection", "price": 69, "label": "Up to 31\"" },
+  { "value": "32-59", "workizId": 1004, "category": "tvSelection", "price": 109, "label": "32\"-59\"" },
+  { "value": "60-75", "workizId": 1005, "category": "tvSelection", "price": 129, "label": "60\"-75\"" },
+  { "value": "76-85", "workizId": 1006, "category": "tvSelection", "price": 149, "label": "76\"-85\"" },
+  { "value": "over-86", "workizId": 1007, "category": "tvSelection", "price": 169, "label": "Over 86\"" },
+  { "value": "frameTvUpTo60", "workizId": 1008, "category": "tvSelection", "price": 159, "label": "Frame TV up to 60 inch" },
+  { "value": "frameTvOver65", "workizId": 1009, "category": "tvSelection", "price": 179, "label": "Frame TV over 65 inch" },
+  { "value": "projectorsNScreens", "workizId": 1010, "category": "tvSelection", "price": 139, "label": "Projectors & Screens" },
+  { "value": "yes", "workizId": 1011, "category": "extraTechnicans", "price": 59, "label": "2 techs (Over 61″)" },
+
+  { "value": "fullMotion", "workizId": 1012, "category": "mountType", "price": 69, "label": "Full-Motion Mount" },
+  { "value": "alreadyThere", "workizId": 1013, "category": "mountType", "price": 0, "label": "Already there" },
+  { "value": "fixed", "workizId": 1014, "category": "mountType", "price": 39, "label": "Fixed Mount" },
+  { "value": "corner", "workizId": 1015, "category": "mountType", "price": 69, "label": "Corner Mount" },
+  { "value": "tilting", "workizId": 1016, "category": "mountType", "price": 49, "label": "Tilting Mount" },
+
+  { "value": "drywall", "workizId": 1017, "category": "wallType", "price": 0, "label": "Drywall" },
+  { "value": "another", "workizId": 1018, "category": "wallType", "price": 49, "label": "Brick, Concrete, Tile, Stone" },
+
+  { "value": "cableChannel", "workizId": 1019, "category": "wires", "price": 39, "label": "Cable channel" },
+  { "value": "wall", "workizId": 1020, "category": "wires", "price": 199, "label": "Put it in the wall" },
+  { "value": "socket", "workizId": 1021, "category": "wires", "price": 229, "label": "In-wall with socket" },
+
+  { "value": "soundbar", "workizId": 1022, "category": "popular", "price": 59, "label": "Install Soundbar" },
+  { "value": "wallShelf", "workizId": 1023, "category": "popular", "price": 39, "label": "Install Wall Shelf" },
+  { "value": "gamingConsole", "workizId": 1024, "category": "popular", "price": 59, "label": "Install Gaming Console" },
+  { "value": "rearSpeaker", "workizId": 1025, "category": "popular", "price": 49, "label": "Install Rear Speaker (2)" },
+
+  { "value": "installLEDLight", "workizId": 1026, "category": "extraInstallation", "price": 29, "label": "Install LED Light" },
+  { "value": "installFireplace", "workizId": 1027, "category": "extraInstallation", "price": 79, "label": "Install Fireplace" },
+  { "value": "dismountExistingTV", "workizId": 1028, "category": "extraInstallation", "price": 79, "label": "Dismount Existing TV" },
+  { "value": "installOfCurtains", "workizId": 1029, "category": "extraInstallation", "price": 59, "label": "Install curtains" },
+  { "value": "installPaintingsAndDecor", "workizId": 1030, "category": "extraInstallation", "price": 35, "label": "Install paintings & decor" },
+
+  { "value": "HDMI10ft", "workizId": 1031, "category": "cables", "price": 14, "label": "HDMI 10ft" },
+  { "value": "HDMI15ft", "workizId": 1032, "category": "cables", "price": 18, "label": "HDMI 15ft" },
+  { "value": "extensionCord6ft", "workizId": 1033, "category": "cables", "price": 6, "label": "Extension Cord 6ft" },
+  { "value": "powerCordForTV", "workizId": 1034, "category": "cables", "price": 15, "label": "Power Cord for TV" }
+]
