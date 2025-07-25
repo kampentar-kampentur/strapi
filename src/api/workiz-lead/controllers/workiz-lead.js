@@ -27,7 +27,7 @@ module.exports = {
         "FirstName": firstName,
         "LastName": lastName,
         "JobType": "Service",
-        "JobSource": "Google",
+        "JobSource": "TVPro Website",
         "CreatedBy": "Artur Holosnyi",
       };
       if (email) leadData.Email = email;
@@ -61,15 +61,13 @@ module.exports = {
       const nameParts = name.trim().split(/\s+/);
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || 'CostumField';
-
-      // 1. Создаём лид
       const leadData = {
         "auth_secret": authSecret,
         "Phone": phone,
         "FirstName": firstName,
         "LastName": lastName,
         "JobType": "Service",
-        "JobSource": "Google",
+        "JobSource": "TVPro Website",
         "CreatedBy": "Artur Holosnyi",
       };
       if (email) leadData.Email = email;
@@ -83,9 +81,6 @@ module.exports = {
         return ctx.internalServerError('Workiz lead response malformed.');
       }
       const { UUID, ClientId } = workizLead;
-
-      // 2. Создаём смету (estimate)
-      // Формируем дату в формате 'YYYY-MM-DD H:mm'
       const now = new Date();
       const pad = n => n < 10 ? '0' + n : n;
       const createdStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${now.getHours()}:${pad(now.getMinutes())}`;
@@ -103,15 +98,12 @@ module.exports = {
         return ctx.internalServerError('Workiz estimate create response malformed.');
       }
 
-      // 3. Собираем все value+count из формы
       const valueCountPairs = [];
-      // tv-size.tvSelection
       if (rest['tv-size'] && Array.isArray(rest['tv-size'].tvSelection)) {
         rest['tv-size'].tvSelection.forEach(tv => {
           if (tv.value) valueCountPairs.push({ value: tv.value, count: Number(tv.count) || 1 });
         });
       }
-      // additional-services
       if (rest['additional-services'] && typeof rest['additional-services'] === 'object') {
         Object.values(rest['additional-services']).forEach(arr => {
           if (Array.isArray(arr)) {
@@ -121,7 +113,6 @@ module.exports = {
           }
         });
       }
-      // mounting-X (динамические шаги для каждого телевизора)
       if (rest['tv-size'] && Array.isArray(rest['tv-size'].tvSelection)) {
         let mountingIdx = 1;
         rest['tv-size'].tvSelection.forEach(tv => {
@@ -140,7 +131,6 @@ module.exports = {
         });
       }
 
-      // 4. Достаём workizId из price-map по value
       const priceMapItems = await strapi.db.query('api::price-map.price-map').findMany();
       const lineItems = [];
       valueCountPairs.forEach(({ value, count }) => {
@@ -150,7 +140,6 @@ module.exports = {
         }
       });
 
-      // 5. Добавляем line items в estimate
       if (lineItems.length > 0) {
         await axios.post(`${baseApiUrl}/estimate/addLineItems/`, {
           auth_secret: authSecret,
@@ -159,7 +148,6 @@ module.exports = {
         });
       }
 
-      // 6. Возвращаем только ответ createLead
       ctx.send({
         ok: true,
         message: 'Lead sent to Workiz successfully.',
