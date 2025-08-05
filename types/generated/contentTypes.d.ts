@@ -403,6 +403,7 @@ export interface ApiAboutUsAboutUs extends Struct.SingleTypeSchema {
 export interface ApiContactUsContactUs extends Struct.SingleTypeSchema {
   collectionName: 'contact_uses';
   info: {
+    description: '';
     displayName: 'Contact Us';
     pluralName: 'contact-uses';
     singularName: 'contact-us';
@@ -422,6 +423,7 @@ export interface ApiContactUsContactUs extends Struct.SingleTypeSchema {
       'api::contact-us.contact-us'
     > &
       Schema.Attribute.Private;
+    pinterest: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     subTitle: Schema.Attribute.Text;
     thumbtack: Schema.Attribute.String;
@@ -430,6 +432,7 @@ export interface ApiContactUsContactUs extends Struct.SingleTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    x: Schema.Attribute.String;
     yelp: Schema.Attribute.String;
     youtube: Schema.Attribute.String;
   };

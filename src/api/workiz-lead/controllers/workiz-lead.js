@@ -136,7 +136,9 @@ module.exports = {
       valueCountPairs.forEach(({ value, count }) => {
         const priceMap = priceMapItems.find(p => p.value === value);
         if (priceMap && priceMap.workizId) {
-          lineItems.push({ Id: priceMap.workizId.toString(), Qty: count });
+          for (let i = 0; i < count; i++) {
+            lineItems.push({ Id: priceMap.workizId.toString() });
+          }
         }
       });
 
