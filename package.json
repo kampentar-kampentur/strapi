@@ -20,6 +20,7 @@
     "@strapi/provider-upload-local": "5.11.0",
     "@strapi/strapi": "5.11.0",
     "cli-table3": "^0.6.5",
+    "node-telegram-bot-api": "^0.66.0",
     "pg": "8.8.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
@@ -33,5 +34,8 @@
   "strapi": {
     "uuid": "ae97edc3-b9a5-4000-bd34-43b102ca9a04"
   },
-  "packageManager": "yarn@4.9.2"
+  "packageManager": "yarn@4.9.2",
+  "devDependencies": {
+    "@types/node-telegram-bot-api": "^0.64.10"
+  }
 }

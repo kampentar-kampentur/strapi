@@ -2,10 +2,14 @@
 
 const axios = require('axios');
 const Table = require('cli-table3');
+const TelegramBot = require('node-telegram-bot-api');
 
 const apiToken = process.env.WORKIZ_API_TOKEN;
 const authSecret = process.env.WORKIZ_AUTH_SECRET;
 const baseApiUrl = apiToken ? `https://api.workiz.com/api/v1/${apiToken}` : '';
+const TGtoken = process.env.TG_TOKEN;
+const chatId = process.env.TG_CHAT_ID;
+const bot = new TelegramBot(TGtoken);
 
 module.exports = {
   async bookNow(ctx) {
@@ -35,7 +39,17 @@ module.exports = {
       if (zip) leadData.PostalCode = zip;
 
       const response = await axios.post(`${baseApiUrl}/lead/create/`, leadData);
-
+      bot.sendMessage(
+        chatId,
+        `📢 *New Lead Received!*\n\n` +
+        `👤 *Name:* ${name}\n` +
+        `📞 *Phone:* ${phone}\n` +
+        `📧 *Email:* ${email}\n` +
+        `🏠 *Address:* ${address}\n` +
+        `📍 *ZIP:* ${zip}\n` +
+        `📍 *Link:* ${response.data.data[0].link}`,
+        { parse_mode: 'Markdown' }
+      );
       ctx.send({
         ok: true,
         message: 'Lead sent to Workiz successfully.',
@@ -149,7 +163,17 @@ module.exports = {
           LineItems: lineItems,
         });
       }
-
+      bot.sendMessage(
+        chatId,
+        `📢 *New Estimate Received!*\n\n` +
+        `👤 *Name:* ${name}\n` +
+        `📞 *Phone:* ${phone}\n` +
+        `📧 *Email:* ${email}\n` +
+        `🏠 *Address:* ${address}\n` +
+        `📍 *ZIP:* ${zip}\n` +
+        `📍 *Link:* ${response.data.data[0].link}`,
+        { parse_mode: 'Markdown' }
+      );
       ctx.send({
         ok: true,
         message: 'Lead sent to Workiz successfully.',
