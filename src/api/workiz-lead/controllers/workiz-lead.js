@@ -171,7 +171,7 @@ module.exports = {
         `📧 *Email:* ${email}\n` +
         `🏠 *Address:* ${address}\n` +
         `📍 *ZIP:* ${zip}\n` +
-        `📍 *Link:* ${response.data.data[0].link}`,
+        `📍 *Link:* ${leadResponse?.data?.data[0]?.link}`,
         { parse_mode: 'Markdown' }
       );
       ctx.send({
