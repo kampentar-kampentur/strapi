@@ -30,7 +30,7 @@ module.exports = {
         "Phone": phone,
         "FirstName": firstName,
         "LastName": lastName,
-        "JobType": "Service",
+        "JobType": "Installation",
         "JobSource": "TVPro Website",
         "CreatedBy": "Artur Holosnyi",
       };
@@ -80,7 +80,7 @@ module.exports = {
         "Phone": phone,
         "FirstName": firstName,
         "LastName": lastName,
-        "JobType": "Service",
+        "JobType": "Installation",
         "JobSource": "TVPro Website",
         "CreatedBy": "Artur Holosnyi",
       };
