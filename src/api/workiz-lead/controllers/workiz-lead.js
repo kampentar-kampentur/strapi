@@ -24,7 +24,7 @@ module.exports = {
 
       const nameParts = name.trim().split(/\s+/);
       const firstName = nameParts[0] || '';
-      const lastName = nameParts.slice(1).join(' ') || 'CostumField';
+      const lastName = nameParts.slice(1).join(' ') || ' ';
       const leadData = {
         "auth_secret": authSecret,
         "Phone": phone,
@@ -74,7 +74,7 @@ module.exports = {
       const { phone, name, email, address, zip } = contactInfo;
       const nameParts = name.trim().split(/\s+/);
       const firstName = nameParts[0] || '';
-      const lastName = nameParts.slice(1).join(' ') || 'CostumField';
+      const lastName = nameParts.slice(1).join(' ') || ' ';
       const leadData = {
         "auth_secret": authSecret,
         "Phone": phone,
