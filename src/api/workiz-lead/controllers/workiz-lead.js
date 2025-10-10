@@ -41,14 +41,14 @@ module.exports = {
       const response = await axios.post(`${baseApiUrl}/lead/create/`, leadData);
       bot.sendMessage(
         chatId,
-        `📢 *New Lead Received!*\n\n` +
-        `👤 *Name:* ${name}\n` +
-        `📞 *Phone:* ${phone}\n` +
-        `📧 *Email:* ${email}\n` +
-        `🏠 *Address:* ${address}\n` +
-        `📍 *ZIP:* ${zip}\n` +
-        `📍 *Link:* ${response.data.data[0].link}`,
-        { parse_mode: 'Markdown' }
+        `📢 <b>New Lead Received!</b><br><br>` +
+        `👤 <b>Name:</b> ${name}<br>` +
+        `📞 <b>Phone:</b> ${phone}<br>` +
+        `📧 <b>Email:</b> ${email}<br>` +
+        `🏠 <b>Address:</b> ${address}<br>` +
+        `📍 <b>ZIP:</b> ${zip}<br>` +
+        `📍 <b>Link:</b> <a href="${response.data.data[0].link}">View Lead</a>`,
+        { parse_mode: 'HTML' }
       );
       ctx.send({
         ok: true,
