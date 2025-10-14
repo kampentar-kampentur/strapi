@@ -38,15 +38,10 @@ module.exports = {
             strapi.log.info(`📩 New Facebook Lead: ${leadgenId}`);
 
             const leadData = await getLeadData(leadgenId);
-
-            // 💾 Сохранить лид в БД (опционально)
-            await strapi.entityService.create('api::lead.lead', {
-              data: {
-                platform: 'facebook',
-                external_id: leadgenId,
-                data: JSON.stringify(leadData),
-              },
-            });
+            console.log('leadData');
+            console.log(JSON.stringify(leadData));
+            
+            
           }
         }
       }
