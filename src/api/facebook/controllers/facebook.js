@@ -21,6 +21,10 @@ module.exports = {
   async receive(ctx) {
     try {
       const body = ctx.request.body;
+      console.log('-------------------------')
+      console.log('LEED')
+      console.log(JSON.stringify(ctx.request.body))
+      console.log('-------------------------')
 
       if (body.object !== 'page') {
         ctx.status = 404;
