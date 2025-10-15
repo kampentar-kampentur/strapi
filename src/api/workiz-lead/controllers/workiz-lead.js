@@ -2,14 +2,11 @@
 
 const axios = require('axios');
 const Table = require('cli-table3');
-const TelegramBot = require('node-telegram-bot-api');
+const { sendMessage } = require('../../../services/telegram-bot');
 
 const apiToken = process.env.WORKIZ_API_TOKEN;
 const authSecret = process.env.WORKIZ_AUTH_SECRET;
 const baseApiUrl = apiToken ? `https://api.workiz.com/api/v1/${apiToken}` : '';
-const TGtoken = process.env.TG_TOKEN;
-const chatId = process.env.TG_CHAT_ID;
-const bot = new TelegramBot(TGtoken);
 
 module.exports = {
   async bookNow(ctx) {
@@ -39,8 +36,7 @@ module.exports = {
       if (zip) leadData.PostalCode = zip;
 
       const response = await axios.post(`${baseApiUrl}/lead/create/`, leadData);
-      bot.sendMessage(
-        chatId,
+      sendMessage(
         `📢 <b>New Lead Received!</b>\n\n` +
         `👤 <b>Name:</b> ${name}\n` +
         `📞 <b>Phone:</b> ${phone}\n` +
@@ -163,8 +159,7 @@ module.exports = {
           LineItems: lineItems,
         });
       }
-      bot.sendMessage(
-        chatId,
+      sendMessage(
         `📢 *New Estimate Received!*\n\n` +
         `👤 *Name:* ${name}\n` +
         `📞 *Phone:* ${phone}\n` +
