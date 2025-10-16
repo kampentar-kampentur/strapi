@@ -23,6 +23,9 @@
         "videos",
         "audios"
       ]
+    },
+    "price": {
+      "type": "integer"
     }
   },
   "config": {}

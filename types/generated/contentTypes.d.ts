@@ -782,6 +782,7 @@ export interface ApiTvMountingTypeTvMountingType
 export interface ApiTvSizeTvSize extends Struct.SingleTypeSchema {
   collectionName: 'tv_sizes';
   info: {
+    description: '';
     displayName: 'TVSize';
     pluralName: 'tv-sizes';
     singularName: 'tv-size';

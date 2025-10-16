@@ -75,6 +75,7 @@ export interface TvsizesTvsizes extends Struct.ComponentSchema {
   attributes: {
     description: Schema.Attribute.String;
     image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    price: Schema.Attribute.Integer;
     title: Schema.Attribute.String;
   };
 }
