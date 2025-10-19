@@ -12,5 +12,11 @@ module.exports = {
       handler: 'facebook.receive',
       config: { auth: false },
     },
+    {
+      method: 'POST',
+      path: '/facebook/zapier-lead',
+      handler: 'facebook.zapierLead',
+      config: { auth: false },
+    },
   ],
 };
