@@ -5,7 +5,7 @@ const VERIFY_TOKEN = process.env.FB_VERIFY_TOKEN;
 const ZAPIER_TOKEN = process.env.ZAPIER_TOKEN || 'your-zapier-token-here';
 
 module.exports = {
-  async verify(ctx) { /* ... (оставить без изменений) ... */ },
+  async verify(ctx) {},
 
   async receive(ctx) {
     ctx.status = 200;

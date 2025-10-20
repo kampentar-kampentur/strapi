@@ -35,22 +35,23 @@ module.exports = {
       if (address) leadData.Address = address;
       if (zip) leadData.PostalCode = zip;
 
-      const response = await axios.post(`${baseApiUrl}/lead/create/`, leadData);
-      sendMessage(
-        `📢 <b>New Lead Received!</b>\n\n` +
-        `👤 <b>Name:</b> ${name}\n` +
-        `📞 <b>Phone:</b> ${phone}\n` +
-        `📧 <b>Email:</b> ${email}\n` +
-        `🏠 <b>Address:</b> ${address}\n` +
-        `📍 <b>ZIP:</b> ${zip}\n` +
-        `📍 <b>Link:</b> <a href="${response.data.data[0].link}">View Lead</a>\n` +
-        `🔗 <b>Source:</b> TVProWebsite`,
-        { parse_mode: 'HTML' }
-      );
+      // const response = await axios.post(`${baseApiUrl}/lead/create/`, leadData);
+      // sendMessage(
+      //   `📢 <b>New Lead Received!</b>\n\n` +
+      //   `👤 <b>Name:</b> ${name}\n` +
+      //   `📞 <b>Phone:</b> ${phone}\n` +
+      //   `📧 <b>Email:</b> ${email}\n` +
+      //   `🏠 <b>Address:</b> ${address}\n` +
+      //   `📍 <b>ZIP:</b> ${zip}\n` +
+      //   `📍 <b>Link:</b> <a href="${response.data.data[0].link}">View Lead</a>\n` +
+      //   `🔗 <b>Source:</b> TVProWebsite`,
+      //   { parse_mode: 'HTML' }
+      // );
+      
       ctx.send({
         ok: true,
         message: 'Lead sent to Workiz successfully.',
-        workizResponse: response.data,
+        // workizResponse: response.data,
       });
     } catch (error) {
       strapi.log.error('Error sending lead to Workiz:', error);
@@ -68,13 +69,17 @@ module.exports = {
         return ctx.badRequest('Missing contactInfo (name or phone) in request body');
       }
       const { contactInfo, ...rest } = data;
-      const { phone, name, email, address, zip } = contactInfo;
+      let { phone, name, email, address, zip, apt } = contactInfo;
+      if (contactInfo.zipApt) {
+        zip = contactInfo.zipApt.zip;
+        apt = contactInfo.zipApt.apt;
+      }
       const nameParts = name.trim().split(/\s+/);
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || ' ';
       const leadData = {
         "auth_secret": authSecret,
-        "Phone": phone,
+        "Phone": phone.replace(/\D/g, ''),
         "FirstName": firstName,
         "LastName": lastName,
         "JobType": "Installation",
@@ -84,6 +89,7 @@ module.exports = {
       if (email) leadData.Email = email;
       if (address) leadData.Address = address;
       if (zip) leadData.PostalCode = zip;
+      if (apt) leadData.Unit = apt;
 
       const leadResponse = await axios.post(`${baseApiUrl}/lead/create/`, leadData);
       const workizLead = leadResponse.data && leadResponse.data.data && Array.isArray(leadResponse.data.data) ? leadResponse.data.data[0] : null;
@@ -110,34 +116,28 @@ module.exports = {
       }
 
       const valueCountPairs = [];
-      if (rest['tv-size'] && Array.isArray(rest['tv-size'].tvSelection)) {
-        rest['tv-size'].tvSelection.forEach(tv => {
-          if (tv.value) valueCountPairs.push({ value: tv.value, count: Number(tv.count) || 1 });
-        });
+      if (rest['tv-size'] && rest['tv-size'].tvSelection) {
+        valueCountPairs.push({ value: rest['tv-size'].tvSelection, count: 1 });
+      }
+      if (rest['tv-size'] && rest['tv-size'].extraTechnicans) {
+        valueCountPairs.push({ value: rest['tv-size'].extraTechnicans, count: 1 });
       }
       if (rest['additional-services'] && typeof rest['additional-services'] === 'object') {
-        Object.values(rest['additional-services']).forEach(arr => {
-          if (Array.isArray(arr)) {
-            arr.forEach(item => {
-              if (item.value) valueCountPairs.push({ value: item.value, count: Number(item.count) || 1 });
-            });
+        Object.values(rest['additional-services']).forEach(item => {
+          if (item && item.value) valueCountPairs.push({ value: item.value, count: Number(item.count) || 1 });
+        });
+      }
+      if (rest['mounting']) {
+        ['mountType'].forEach(field => {
+          if (rest['mounting'][field]) {
+            valueCountPairs.push({ value: rest['mounting'][field], count: 1 });
           }
         });
       }
-      if (rest['tv-size'] && Array.isArray(rest['tv-size'].tvSelection)) {
-        let mountingIdx = 1;
-        rest['tv-size'].tvSelection.forEach(tv => {
-          const count = Number(tv.count) || 1;
-          for (let i = 0; i < count; i++) {
-            const mount = rest[`mounting-${mountingIdx}`];
-            if (mount) {
-              ['mountType', 'wallType', 'wires'].forEach(field => {
-                if (mount[field]) {
-                  valueCountPairs.push({ value: mount[field], count: 1 });
-                }
-              });
-            }
-            mountingIdx++;
+      if (rest['wall']) {
+        ['wallType', 'wires'].forEach(field => {
+          if (rest['wall'][field]) {
+            valueCountPairs.push({ value: rest['wall'][field], count: 1 });
           }
         });
       }
