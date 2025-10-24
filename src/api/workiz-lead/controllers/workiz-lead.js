@@ -35,18 +35,18 @@ module.exports = {
       if (address) leadData.Address = address;
       if (zip) leadData.PostalCode = zip;
 
-      // const response = await axios.post(`${baseApiUrl}/lead/create/`, leadData);
-      // sendMessage(
-      //   `📢 <b>New Lead Received!</b>\n\n` +
-      //   `👤 <b>Name:</b> ${name}\n` +
-      //   `📞 <b>Phone:</b> ${phone}\n` +
-      //   `📧 <b>Email:</b> ${email}\n` +
-      //   `🏠 <b>Address:</b> ${address}\n` +
-      //   `📍 <b>ZIP:</b> ${zip}\n` +
-      //   `📍 <b>Link:</b> <a href="${response.data.data[0].link}">View Lead</a>\n` +
-      //   `🔗 <b>Source:</b> TVProWebsite`,
-      //   { parse_mode: 'HTML' }
-      // );
+      const response = await axios.post(`${baseApiUrl}/lead/create/`, leadData);
+      sendMessage(
+        `📢 <b>New Lead Received!</b>\n\n` +
+        `👤 <b>Name:</b> ${name}\n` +
+        `📞 <b>Phone:</b> ${phone}\n` +
+        `📧 <b>Email:</b> ${email}\n` +
+        `🏠 <b>Address:</b> ${address}\n` +
+        `📍 <b>ZIP:</b> ${zip}\n` +
+        `📍 <b>Link:</b> <a href="${response.data.data[0].link}">View Lead</a>\n` +
+        `🔗 <b>Source:</b> TVProWebsite`,
+        { parse_mode: 'HTML' }
+      );
       
       ctx.send({
         ok: true,
