@@ -717,6 +717,7 @@ export interface ApiOurServiceOurService extends Struct.SingleTypeSchema {
 export interface ApiPriceMapPriceMap extends Struct.CollectionTypeSchema {
   collectionName: 'price_maps';
   info: {
+    description: '';
     displayName: 'Price Map';
     pluralName: 'price-maps';
     singularName: 'price-map';
@@ -729,6 +730,7 @@ export interface ApiPriceMapPriceMap extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    itemName: Schema.Attribute.Text;
     label: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<

@@ -4,7 +4,8 @@
   "info": {
     "singularName": "price-map",
     "pluralName": "price-maps",
-    "displayName": "Price Map"
+    "displayName": "Price Map",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -24,6 +25,9 @@
     },
     "label": {
       "type": "string"
+    },
+    "itemName": {
+      "type": "text"
     }
   }
 }

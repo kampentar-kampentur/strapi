@@ -2,11 +2,57 @@
 
 const axios = require('axios');
 const Table = require('cli-table3');
+const fs = require('fs').promises;
+const path = require('path');
 const { sendMessage } = require('../../../services/telegram-bot');
 
 const apiToken = process.env.WORKIZ_API_TOKEN;
 const authSecret = process.env.WORKIZ_AUTH_SECRET;
-const baseApiUrl = apiToken ? `https://api.workiz.com/api/v1/${apiToken}` : '';
+
+// Helper function to send data to ProsBuddy API and save response
+async function sendToProsBuddy(firstName, lastName, email, phone, address, zip, apt, services, endpoint) {
+  try {
+    const prosbuddyData = {
+      "account_key": "tvproHandyServices",
+      "event": "form_submitted",
+      "data": {
+        "first_name": firstName,
+        "last_name": lastName,
+        "email": email || '',
+        "phone": phone || '',
+        "address": address || '',
+        "zip": zip || '',
+        "apt": apt || '',
+        "services": services || []
+      }
+    };
+
+    const response = await axios.post('https://dev.app.prosbuddy.ai/api/v1/webhook/ghl/create-lead', prosbuddyData);
+
+    // Save response to file for testing
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const filename = `prosbuddy_response_${endpoint}_${timestamp}.json`;
+    const filepath = path.join(__dirname, '../../../prosbuddy_logs', filename);
+    
+    try {
+      await fs.mkdir(path.dirname(filepath), { recursive: true });
+      await fs.writeFile(filepath, JSON.stringify({
+        timestamp,
+        endpoint,
+        request: prosbuddyData,
+        response: response.data
+      }, null, 2));
+      strapi.log.info(`ProsBuddy response saved to: ${filename}`);
+    } catch (fileError) {
+      strapi.log.error('Error saving ProsBuddy response to file:', fileError);
+    }
+    
+    return response.data;
+  } catch (error) {
+    strapi.log.error('Error sending data to ProsBuddy:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+}
 
 module.exports = {
   async bookNow(ctx) {
@@ -35,7 +81,14 @@ module.exports = {
       if (address) leadData.Address = address;
       if (zip) leadData.PostalCode = zip;
 
-      const response = await axios.post(`${baseApiUrl}/lead/create/`, leadData);
+      // Send data to ProsBuddy API
+      try {
+        await sendToProsBuddy(firstName, lastName, email, phone, address, zip, '', [], 'bookNow');
+      } catch (prosbuddyError) {
+        strapi.log.error('ProsBuddy API call failed, but continuing with Workiz flow:', prosbuddyError.message);
+        // Continue with the flow even if ProsBuddy fails
+      }
+      
       sendMessage(
         `📢 <b>New Lead Received!</b>\n\n` +
         `👤 <b>Name:</b> ${name}\n` +
@@ -43,7 +96,6 @@ module.exports = {
         `📧 <b>Email:</b> ${email}\n` +
         `🏠 <b>Address:</b> ${address}\n` +
         `📍 <b>ZIP:</b> ${zip}\n` +
-        `📍 <b>Link:</b> <a href="${response.data.data[0].link}">View Lead</a>\n` +
         `🔗 <b>Source:</b> TVProWebsite`,
         { parse_mode: 'HTML' }
       );
@@ -91,30 +143,6 @@ module.exports = {
       if (zip) leadData.PostalCode = zip;
       if (apt) leadData.Unit = apt;
 
-      const leadResponse = await axios.post(`${baseApiUrl}/lead/create/`, leadData);
-      const workizLead = leadResponse.data && leadResponse.data.data && Array.isArray(leadResponse.data.data) ? leadResponse.data.data[0] : null;
-      if (!workizLead) {
-        strapi.log.error('Workiz lead response malformed:', leadResponse.data);
-        return ctx.internalServerError('Workiz lead response malformed.');
-      }
-      const { UUID, ClientId } = workizLead;
-      const now = new Date();
-      const pad = n => n < 10 ? '0' + n : n;
-      const createdStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${now.getHours()}:${pad(now.getMinutes())}`;
-      const estimateCreateRes = await axios.post(`${baseApiUrl}/estimate/create/`, {
-        auth_secret: authSecret,
-        ClientId,
-        UUID,
-        Name: firstName + ' ' + lastName,
-        Description: '',
-        Created: createdStr,
-      });
-      const estimateId = estimateCreateRes?.data?.data ;
-      if (!estimateId) {
-        strapi.log.error('Workiz estimate create response malformed:', estimateCreateRes.data);
-        return ctx.internalServerError('Workiz estimate create response malformed.');
-      }
-
       const valueCountPairs = [];
       if (rest['tv-size'] && rest['tv-size'].tvSelection) {
         valueCountPairs.push({ value: rest['tv-size'].tvSelection, count: 1 });
@@ -144,22 +172,29 @@ module.exports = {
 
       const priceMapItems = await strapi.db.query('api::price-map.price-map').findMany();
       const lineItems = [];
+      const services = [];
+      
       valueCountPairs.forEach(({ value, count }) => {
         const priceMap = priceMapItems.find(p => p.value === value);
         if (priceMap && priceMap.workizId) {
           for (let i = 0; i < count; i++) {
             lineItems.push({ Id: priceMap.workizId.toString() });
+            services.push({
+              id: parseInt(priceMap.workizId),
+              name: priceMap.itemName || value  // Use itemName if available, fallback to value
+            });
           }
         }
       });
 
-      if (lineItems.length > 0) {
-        await axios.post(`${baseApiUrl}/estimate/addLineItems/`, {
-          auth_secret: authSecret,
-          Id: estimateId.toString(),
-          LineItems: lineItems,
-        });
+      // Send data to ProsBuddy API
+      try {
+        await sendToProsBuddy(firstName, lastName, email, phone, address, zip, apt, services, 'bestQuote');
+      } catch (prosbuddyError) {
+        strapi.log.error('ProsBuddy API call failed, but continuing with Workiz flow:', prosbuddyError.message);
+        // Continue with the flow even if ProsBuddy fails
       }
+
       sendMessage(
         `📢 *New Estimate Received!*\n\n` +
         `👤 *Name:* ${name}\n` +
@@ -167,14 +202,13 @@ module.exports = {
         `📧 *Email:* ${email}\n` +
         `🏠 *Address:* ${address}\n` +
         `📍 *ZIP:* ${zip}\n` +
-        `📍 *Link:* ${leadResponse?.data?.data[0]?.link}\n` +
         `🔗 *Source:* TVProWebsite`,
         { parse_mode: 'Markdown' }
       );
+
       ctx.send({
         ok: true,
-        message: 'Lead sent to Workiz successfully.',
-        workizResponse: leadResponse.data,
+        message: 'Lead created successfully.',
       });
     } catch (error) {
       strapi.log.error('Error in bestQuote:', error && error.response ? error.response.data : error);
