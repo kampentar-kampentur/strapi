@@ -714,6 +714,35 @@ export interface ApiOurServiceOurService extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiOurTeamOurTeam extends Struct.SingleTypeSchema {
+  collectionName: 'our_teams';
+  info: {
+    displayName: 'Our Team';
+    pluralName: 'our-teams';
+    singularName: 'our-team';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::our-team.our-team'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    subTitle: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiPriceMapPriceMap extends Struct.CollectionTypeSchema {
   collectionName: 'price_maps';
   info: {
@@ -745,6 +774,34 @@ export interface ApiPriceMapPriceMap extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     value: Schema.Attribute.String;
     workizId: Schema.Attribute.Integer;
+  };
+}
+
+export interface ApiTeamMemberTeamMember extends Struct.CollectionTypeSchema {
+  collectionName: 'team_members';
+  info: {
+    displayName: 'Team Members';
+    pluralName: 'team-members';
+    singularName: 'team-member';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::team-member.team-member'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -1363,7 +1420,9 @@ declare module '@strapi/strapi' {
       'api::hero-text-line.hero-text-line': ApiHeroTextLineHeroTextLine;
       'api::hero.hero': ApiHeroHero;
       'api::our-service.our-service': ApiOurServiceOurService;
+      'api::our-team.our-team': ApiOurTeamOurTeam;
       'api::price-map.price-map': ApiPriceMapPriceMap;
+      'api::team-member.team-member': ApiTeamMemberTeamMember;
       'api::tv-mounting-type.tv-mounting-type': ApiTvMountingTypeTvMountingType;
       'api::tv-size.tv-size': ApiTvSizeTvSize;
       'api::why-customers-choose-us.why-customers-choose-us': ApiWhyCustomersChooseUsWhyCustomersChooseUs;
