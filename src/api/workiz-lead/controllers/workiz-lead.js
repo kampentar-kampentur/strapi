@@ -33,7 +33,7 @@ async function sendToProsBuddy(firstName, lastName, email, phone, address, zip, 
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const filename = `prosbuddy_response_${endpoint}_${timestamp}.json`;
     const filepath = path.join(__dirname, '../../../prosbuddy_logs', filename);
-    
+
     try {
       await fs.mkdir(path.dirname(filepath), { recursive: true });
       await fs.writeFile(filepath, JSON.stringify({
@@ -46,7 +46,7 @@ async function sendToProsBuddy(firstName, lastName, email, phone, address, zip, 
     } catch (fileError) {
       strapi.log.error('Error saving ProsBuddy response to file:', fileError);
     }
-    
+
     return response.data;
   } catch (error) {
     strapi.log.error('Error sending data to ProsBuddy:', error.response ? error.response.data : error.message);
@@ -88,7 +88,7 @@ module.exports = {
         strapi.log.error('ProsBuddy API call failed, but continuing with Workiz flow:', prosbuddyError.message);
         // Continue with the flow even if ProsBuddy fails
       }
-      
+
       sendMessage(
         `📢 <b>New Lead Received!</b>\n\n` +
         `👤 <b>Name:</b> ${name}\n` +
@@ -99,7 +99,7 @@ module.exports = {
         `🔗 <b>Source:</b> TVProWebsite`,
         { parse_mode: 'HTML' }
       );
-      
+
       ctx.send({
         ok: true,
         message: 'Lead sent to Workiz successfully.',
@@ -173,7 +173,9 @@ module.exports = {
       const priceMapItems = await strapi.db.query('api::price-map.price-map').findMany();
       const lineItems = [];
       const services = [];
-      
+      const itemsWithPrices = [];
+      let totalPrice = 0;
+
       valueCountPairs.forEach(({ value, count }) => {
         const priceMap = priceMapItems.find(p => p.value === value);
         if (priceMap && priceMap.workizId) {
@@ -184,6 +186,15 @@ module.exports = {
               name: priceMap.itemName || value  // Use itemName if available, fallback to value
             });
           }
+          const itemPrice = priceMap.price || 0;
+          const itemTotal = itemPrice * count;
+          totalPrice += itemTotal;
+          itemsWithPrices.push({
+            name: priceMap.itemName || priceMap.label || value,
+            price: itemPrice,
+            count: count,
+            total: itemTotal
+          });
         }
       });
 
@@ -195,6 +206,17 @@ module.exports = {
         // Continue with the flow even if ProsBuddy fails
       }
 
+      // Format items list for Telegram
+      let itemsListText = '';
+      if (itemsWithPrices.length > 0) {
+        itemsListText = '\n\n🛒 *Selected Items:*\n';
+        itemsWithPrices.forEach(item => {
+          const countText = item.count > 1 ? ` x${item.count}` : '';
+          itemsListText += `• ${item.name}${countText} — $${item.total.toFixed(2)}\n`;
+        });
+        itemsListText += `\n💰 *Total Price:* $${totalPrice.toFixed(2)}`;
+      }
+
       sendMessage(
         `📢 *New Estimate Received!*\n\n` +
         `👤 *Name:* ${name}\n` +
@@ -202,7 +224,8 @@ module.exports = {
         `📧 *Email:* ${email}\n` +
         `🏠 *Address:* ${address}\n` +
         `📍 *ZIP:* ${zip}\n` +
-        `🔗 *Source:* TVProWebsite`,
+        `🔗 *Source:* TVProWebsite` +
+        itemsListText,
         { parse_mode: 'Markdown' }
       );
 
@@ -220,7 +243,7 @@ module.exports = {
 function arrayToCliTableText(data) {
   if (!Array.isArray(data) || data.length === 0) return '';
   const head = Object.keys(data[0]);
-  const table = new Table({ head, style: { head: [], border: [] }, wordWrap: true,chars: { 'top': '', 'top-mid': '', 'top-left': '', 'top-right': '', 'bottom': '', 'bottom-mid': '', 'bottom-left': '', 'bottom-right': '', 'left': '', 'left-mid': '', 'mid': '', 'mid-mid': '', 'right': '', 'right-mid': '', 'middle': ' | ' } });
+  const table = new Table({ head, style: { head: [], border: [] }, wordWrap: true, chars: { 'top': '', 'top-mid': '', 'top-left': '', 'top-right': '', 'bottom': '', 'bottom-mid': '', 'bottom-left': '', 'bottom-right': '', 'left': '', 'left-mid': '', 'mid': '', 'mid-mid': '', 'right': '', 'right-mid': '', 'middle': ' | ' } });
   data.forEach(row => table.push(head.map(h => row[h])));
   return table.toString();
 }
