@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_blocks_why_customers_choose_uses",
+  "info": {
+    "displayName": "Why Customers Choose Us",
+    "icon": "cup"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "text"
+    },
+    "cards": {
+      "type": "component",
+      "repeatable": true,
+      "component": "tvsizes.tvsizes"
+    }
+  }
+}

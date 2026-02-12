@@ -434,6 +434,51 @@ export interface ApiCertificateCertificate extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiCityCity extends Struct.CollectionTypeSchema {
+  collectionName: 'cities';
+  info: {
+    description: '';
+    displayName: 'City';
+    pluralName: 'cities';
+    singularName: 'city';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    city_name: Schema.Attribute.Text;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::city.city'> &
+      Schema.Attribute.Private;
+    page: Schema.Attribute.DynamicZone<
+      [
+        'blocks.hero',
+        'blocks.tv-sizes',
+        'blocks.gallery-of-work',
+        'blocks.certificate',
+        'blocks.tv-mounting-types',
+        'blocks.why-customers-choose-us',
+        'blocks.customer-reviews',
+        'blocks.our-services',
+        'blocks.about-us',
+        'blocks.faq',
+        'blocks.contact-us',
+      ]
+    >;
+    path: Schema.Attribute.Text;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'global.seo', false>;
+    state_code: Schema.Attribute.Text;
+    test_version: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiContactUsContactUs extends Struct.SingleTypeSchema {
   collectionName: 'contact_uses';
   info: {
@@ -1411,6 +1456,7 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::about-us.about-us': ApiAboutUsAboutUs;
       'api::certificate.certificate': ApiCertificateCertificate;
+      'api::city.city': ApiCityCity;
       'api::contact-us.contact-us': ApiContactUsContactUs;
       'api::cta.cta': ApiCtaCta;
       'api::customer-review.customer-review': ApiCustomerReviewCustomerReview;

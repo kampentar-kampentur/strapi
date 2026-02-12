@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_blocks_about_uses",
+  "info": {
+    "displayName": "About Us",
+    "icon": "eye"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "string"
+    },
+    "mainTextLeft": {
+      "type": "text"
+    },
+    "mainTextRight": {
+      "type": "text"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_tvsizes_tests",
+  "info": {
+    "displayName": "test",
+    "icon": "phone"
+  },
+  "options": {},
+  "attributes": {
+    "test": {
+      "type": "text"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_blocks_gallery_of_works",
+  "info": {
+    "displayName": "Gallery Of Work",
+    "icon": "bulletList"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "text"
+    },
+    "types": {
+      "type": "component",
+      "repeatable": true,
+      "component": "gallery.types"
+    }
+  }
+}

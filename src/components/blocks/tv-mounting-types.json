@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_blocks_tv_mounting_types",
+  "info": {
+    "displayName": "TV Mounting Types",
+    "icon": "television"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "text"
+    },
+    "mountingTypes": {
+      "type": "component",
+      "repeatable": true,
+      "component": "tvsizes.tvsizes"
+    },
+    "addons": {
+      "type": "component",
+      "repeatable": true,
+      "component": "tv-mounting-types.add-ons"
+    }
+  }
+}

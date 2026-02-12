@@ -1,0 +1,40 @@
+{
+  "collectionName": "components_blocks_contact_uses",
+  "info": {
+    "displayName": "Contact Us",
+    "icon": "message"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "text"
+    },
+    "facebook": {
+      "type": "text"
+    },
+    "instagram": {
+      "type": "text"
+    },
+    "tiktok": {
+      "type": "text"
+    },
+    "youtube": {
+      "type": "text"
+    },
+    "yelp": {
+      "type": "text"
+    },
+    "thumbtack": {
+      "type": "text"
+    },
+    "pinterest": {
+      "type": "text"
+    },
+    "x": {
+      "type": "text"
+    }
+  }
+}

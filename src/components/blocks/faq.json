@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_blocks_faqs",
+  "info": {
+    "displayName": "FAQ",
+    "icon": "question"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "string"
+    },
+    "faqs": {
+      "type": "component",
+      "repeatable": true,
+      "component": "faq.faqs"
+    }
+  }
+}

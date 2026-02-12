@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_blocks_tv_sizes",
+  "info": {
+    "displayName": "TV Sizes",
+    "icon": "crop"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "text"
+    },
+    "tvsizes": {
+      "type": "component",
+      "repeatable": true,
+      "component": "tvsizes.tvsizes"
+    }
+  }
+}

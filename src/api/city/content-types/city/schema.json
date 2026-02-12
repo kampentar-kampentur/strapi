@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "cities",
+  "info": {
+    "singularName": "city",
+    "pluralName": "cities",
+    "displayName": "City",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "page": {
+      "type": "dynamiczone",
+      "components": [
+        "blocks.hero",
+        "blocks.tv-sizes",
+        "blocks.gallery-of-work",
+        "blocks.certificate",
+        "blocks.tv-mounting-types",
+        "blocks.why-customers-choose-us",
+        "blocks.customer-reviews",
+        "blocks.our-services",
+        "blocks.about-us",
+        "blocks.faq",
+        "blocks.contact-us"
+      ]
+    },
+    "path": {
+      "type": "text"
+    },
+    "city_name": {
+      "type": "text"
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "global.seo"
+    },
+    "test_version": {
+      "type": "text"
+    },
+    "state_code": {
+      "type": "text"
+    }
+  }
+}

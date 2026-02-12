@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_global_seos",
+  "info": {
+    "displayName": "seo",
+    "icon": "gate",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "metaTitle": {
+      "type": "text"
+    },
+    "metaDescription": {
+      "type": "text"
+    },
+    "shareImage": {
+      "type": "text"
+    }
+  }
+}

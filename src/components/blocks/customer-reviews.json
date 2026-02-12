@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_blocks_customer_reviews",
+  "info": {
+    "displayName": "Customer Reviews",
+    "icon": "heart"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "string"
+    }
+  }
+}
