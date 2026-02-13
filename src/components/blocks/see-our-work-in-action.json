@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_blocks_see_our_work_in_actions",
+  "info": {
+    "displayName": "See Our Work in Action",
+    "icon": "cast"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "text"
+    },
+    "videoItem": {
+      "type": "component",
+      "repeatable": true,
+      "component": "video-block.video-item"
+    }
+  }
+}

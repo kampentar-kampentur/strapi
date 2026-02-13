@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_video_block_video_items",
+  "info": {
+    "displayName": "video-item",
+    "icon": "eye"
+  },
+  "options": {},
+  "attributes": {
+    "youtubeId": {
+      "type": "text"
+    },
+    "title": {
+      "type": "text"
+    },
+    "description": {
+      "type": "text"
+    }
+  }
+}

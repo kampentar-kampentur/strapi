@@ -466,6 +466,7 @@ export interface ApiCityCity extends Struct.CollectionTypeSchema {
         'blocks.about-us',
         'blocks.faq',
         'blocks.contact-us',
+        'blocks.see-our-work-in-action',
       ]
     >;
     path: Schema.Attribute.Text;
@@ -819,6 +820,37 @@ export interface ApiPriceMapPriceMap extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     value: Schema.Attribute.String;
     workizId: Schema.Attribute.Integer;
+  };
+}
+
+export interface ApiSeeOurWorkInActionSeeOurWorkInAction
+  extends Struct.SingleTypeSchema {
+  collectionName: 'see_our_work_in_actions';
+  info: {
+    displayName: 'See Our Work in Action';
+    pluralName: 'see-our-work-in-actions';
+    singularName: 'see-our-work-in-action';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::see-our-work-in-action.see-our-work-in-action'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    subTitle: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    videoItem: Schema.Attribute.Component<'video-block.video-item', true>;
   };
 }
 
@@ -1468,6 +1500,7 @@ declare module '@strapi/strapi' {
       'api::our-service.our-service': ApiOurServiceOurService;
       'api::our-team.our-team': ApiOurTeamOurTeam;
       'api::price-map.price-map': ApiPriceMapPriceMap;
+      'api::see-our-work-in-action.see-our-work-in-action': ApiSeeOurWorkInActionSeeOurWorkInAction;
       'api::team-member.team-member': ApiTeamMemberTeamMember;
       'api::tv-mounting-type.tv-mounting-type': ApiTvMountingTypeTvMountingType;
       'api::tv-size.tv-size': ApiTvSizeTvSize;

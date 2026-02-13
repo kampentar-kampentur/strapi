@@ -136,6 +136,19 @@ export interface BlocksOurServices extends Struct.ComponentSchema {
   };
 }
 
+export interface BlocksSeeOurWorkInAction extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_see_our_work_in_actions';
+  info: {
+    displayName: 'See Our Work in Action';
+    icon: 'cast';
+  };
+  attributes: {
+    subTitle: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
+    videoItem: Schema.Attribute.Component<'video-block.video-item', true>;
+  };
+}
+
 export interface BlocksTvMountingTypes extends Struct.ComponentSchema {
   collectionName: 'components_blocks_tv_mounting_types';
   info: {
@@ -266,6 +279,19 @@ export interface TvsizesTvsizes extends Struct.ComponentSchema {
   };
 }
 
+export interface VideoBlockVideoItem extends Struct.ComponentSchema {
+  collectionName: 'components_video_block_video_items';
+  info: {
+    displayName: 'video-item';
+    icon: 'eye';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
+    youtubeId: Schema.Attribute.Text;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
@@ -278,6 +304,7 @@ declare module '@strapi/strapi' {
       'blocks.gallery-of-work': BlocksGalleryOfWork;
       'blocks.hero': BlocksHero;
       'blocks.our-services': BlocksOurServices;
+      'blocks.see-our-work-in-action': BlocksSeeOurWorkInAction;
       'blocks.tv-mounting-types': BlocksTvMountingTypes;
       'blocks.tv-sizes': BlocksTvSizes;
       'blocks.why-customers-choose-us': BlocksWhyCustomersChooseUs;
@@ -288,6 +315,7 @@ declare module '@strapi/strapi' {
       'tv-mounting-types.add-ons': TvMountingTypesAddOns;
       'tvsizes.test': TvsizesTest;
       'tvsizes.tvsizes': TvsizesTvsizes;
+      'video-block.video-item': VideoBlockVideoItem;
     }
   }
 }

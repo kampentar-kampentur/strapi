@@ -1,0 +1,25 @@
+{
+  "kind": "singleType",
+  "collectionName": "see_our_work_in_actions",
+  "info": {
+    "singularName": "see-our-work-in-action",
+    "pluralName": "see-our-work-in-actions",
+    "displayName": "See Our Work in Action"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "text"
+    },
+    "videoItem": {
+      "type": "component",
+      "repeatable": true,
+      "component": "video-block.video-item"
+    }
+  }
+}
