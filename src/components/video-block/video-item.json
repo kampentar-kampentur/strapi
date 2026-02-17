@@ -2,7 +2,8 @@
   "collectionName": "components_video_block_video_items",
   "info": {
     "displayName": "video-item",
-    "icon": "eye"
+    "icon": "eye",
+    "description": ""
   },
   "options": {},
   "attributes": {
@@ -14,6 +15,9 @@
     },
     "description": {
       "type": "text"
+    },
+    "isVertical": {
+      "type": "boolean"
     }
   }
 }
