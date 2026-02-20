@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_cta_cta_overrides",
+  "info": {
+    "displayName": "cta_override",
+    "icon": "phone"
+  },
+  "options": {},
+  "attributes": {
+    "phone": {
+      "type": "text"
+    },
+    "workHours": {
+      "type": "text"
+    },
+    "email": {
+      "type": "text"
+    },
+    "phoneLabel": {
+      "type": "text"
+    }
+  }
+}

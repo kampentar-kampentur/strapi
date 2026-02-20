@@ -189,6 +189,20 @@ export interface BlocksWhyCustomersChooseUs extends Struct.ComponentSchema {
   };
 }
 
+export interface CtaCtaOverride extends Struct.ComponentSchema {
+  collectionName: 'components_cta_cta_overrides';
+  info: {
+    displayName: 'cta_override';
+    icon: 'phone';
+  };
+  attributes: {
+    email: Schema.Attribute.Text;
+    phone: Schema.Attribute.Text;
+    phoneLabel: Schema.Attribute.Text;
+    workHours: Schema.Attribute.Text;
+  };
+}
+
 export interface FaqFaqs extends Struct.ComponentSchema {
   collectionName: 'components_faq_faqs';
   info: {
@@ -282,11 +296,13 @@ export interface TvsizesTvsizes extends Struct.ComponentSchema {
 export interface VideoBlockVideoItem extends Struct.ComponentSchema {
   collectionName: 'components_video_block_video_items';
   info: {
+    description: '';
     displayName: 'video-item';
     icon: 'eye';
   };
   attributes: {
     description: Schema.Attribute.Text;
+    isVertical: Schema.Attribute.Boolean;
     title: Schema.Attribute.Text;
     youtubeId: Schema.Attribute.Text;
   };
@@ -308,6 +324,7 @@ declare module '@strapi/strapi' {
       'blocks.tv-mounting-types': BlocksTvMountingTypes;
       'blocks.tv-sizes': BlocksTvSizes;
       'blocks.why-customers-choose-us': BlocksWhyCustomersChooseUs;
+      'cta.cta-override': CtaCtaOverride;
       'faq.faqs': FaqFaqs;
       'gallery.types': GalleryTypes;
       'global.seo': GlobalSeo;
