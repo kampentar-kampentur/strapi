@@ -8,7 +8,6 @@ const bot = new TelegramBot(TGtoken);
 
 module.exports = {
   sendMessage: (text, options = {}) => {
-    // return bot.sendMessage(chatId, text, options);
-    return true;
+    return bot.sendMessage(chatId, text, options);
   }
 };
