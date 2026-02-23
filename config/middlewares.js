@@ -36,15 +36,14 @@ module.exports = [
             "'self'",
             'data:',
             'blob:',
-            'market-assets.strapi.io',
-            'res.cloudinary.com', // Cloudinary
-            '*.amazonaws.com', // если используете S3
+            'media.tvprousa.com'
           ],
           'media-src': [
             "'self'",
             'data:',
             'blob:',
-            'res.cloudinary.com',
+            'dl.airtable.com',
+            'media.tvprousa.com'
           ],
           upgradeInsecureRequests: null,
         },

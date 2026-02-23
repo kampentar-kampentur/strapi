@@ -6,30 +6,26 @@ module.exports = ({ env }) => ({
   },
   upload: {
     config: {
-    provider: 'cloudinary',
-    providerOptions: {
-      cloud_name: env('CLOUDINARY_CLOUD_NAME'),
-      api_key: env('CLOUDINARY_API_KEY'),
-      api_secret: env('CLOUDINARY_API_SECRET'),
-    },
-    actionOptions: {
-      upload: {
-        resource_type: 'auto', // Поддержка видео
+      provider: 'aws-s3',
+      providerOptions: {
+        s3Options: {
+          credentials: {
+            accessKeyId: env('CF_R2_ACCESS_KEY_ID'),
+            secretAccessKey: env('CF_R2_SECRET_ACCESS_KEY'),
+          },
+          endpoint: env('CF_R2_ENDPOINT'),
+          region: env('AWS_REGION', 'auto'),
+        },
+        params: {
+          Bucket: env('CF_R2_BUCKET'),
+        },
+        baseUrl: env('CF_R2_PUBLIC_URL'),
       },
-      eager: [
-        {
-          width: 300,
-          height: 200,
-          crop: 'fill',
-          format: 'jpg',
-          resource_type: 'video' // для видео превью
-        }
-      ],
-      uploadStream: {
-        resource_type: 'auto',
+      actionOptions: {
+        upload: {},
+        uploadStream: {},
+        delete: {},
       },
-      delete: {},
     },
-  },
   },
 });
