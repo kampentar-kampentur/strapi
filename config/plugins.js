@@ -22,7 +22,9 @@ module.exports = ({ env }) => ({
         baseUrl: env('CF_R2_PUBLIC_URL'),
       },
       actionOptions: {
-        upload: {},
+        upload: {
+          optimize: true,
+        },
         uploadStream: {},
         delete: {},
       },

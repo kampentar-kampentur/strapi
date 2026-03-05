@@ -10,21 +10,31 @@ const apiToken = process.env.WORKIZ_API_TOKEN;
 const authSecret = process.env.WORKIZ_AUTH_SECRET;
 
 // Helper function to send data to ProsBuddy API and save response
-async function sendToProsBuddy(firstName, lastName, email, phone, address, zip, apt, services, endpoint) {
+async function sendToProsBuddy(firstName, lastName, email, phone, address, zip, apt, services, endpoint, utmParams = {}) {
   try {
+    const dataPayload = {
+      "first_name": firstName,
+      "last_name": lastName,
+      "email": email || '',
+      "phone": phone || '',
+      "address": address || '',
+      "zip": zip || '',
+      "apt": apt || '',
+      "services": services || []
+    };
+
+    // Add UTM parameters if present
+    const utmFields = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+    utmFields.forEach(field => {
+      if (utmParams[field]) {
+        dataPayload[field] = utmParams[field];
+      }
+    });
+
     const prosbuddyData = {
       "account_key": "tvproHandyServices",
       "event": "form_submitted",
-      "data": {
-        "first_name": firstName,
-        "last_name": lastName,
-        "email": email || '',
-        "phone": phone || '',
-        "address": address || '',
-        "zip": zip || '',
-        "apt": apt || '',
-        "services": services || []
-      }
+      "data": dataPayload
     };
 
     const response = await axios.post('https://dev.app.prosbuddy.ai/api/v1/webhook/ghl/create-lead', prosbuddyData);
@@ -60,10 +70,12 @@ module.exports = {
       if (!apiToken || !authSecret) {
         return ctx.internalServerError('Workiz API credentials are not set in environment variables.');
       }
-      const { phone, name, email, address, zip } = ctx.request.body.data;
+      const { phone, name, email, address, zip, utm_source, utm_medium, utm_campaign, utm_content, utm_term } = ctx.request.body.data;
       if (!phone || !name) {
         return ctx.badRequest('Missing "phone" or "name" in request body');
       }
+
+      const utmParams = { utm_source, utm_medium, utm_campaign, utm_content, utm_term };
 
       const nameParts = name.trim().split(/\s+/);
       const firstName = nameParts[0] || '';
@@ -83,7 +95,7 @@ module.exports = {
 
       // Send data to ProsBuddy API
       try {
-        await sendToProsBuddy(firstName, lastName, email, phone, address, zip, '', [], 'bookNow');
+        await sendToProsBuddy(firstName, lastName, email, phone, address, zip, '', [], 'bookNow', utmParams);
       } catch (prosbuddyError) {
         strapi.log.error('ProsBuddy API call failed, but continuing with Workiz flow:', prosbuddyError.message);
         // Continue with the flow even if ProsBuddy fails
@@ -120,7 +132,8 @@ module.exports = {
       if (!data || !data.contactInfo || !data.contactInfo.phone || !data.contactInfo.name) {
         return ctx.badRequest('Missing contactInfo (name or phone) in request body');
       }
-      const { contactInfo, ...rest } = data;
+      const { contactInfo, utm_source, utm_medium, utm_campaign, utm_content, utm_term, ...rest } = data;
+      const utmParams = { utm_source, utm_medium, utm_campaign, utm_content, utm_term };
       let { phone, name, email, address, zip, apt } = contactInfo;
       if (contactInfo.zipApt) {
         zip = contactInfo.zipApt.zip;
@@ -200,7 +213,7 @@ module.exports = {
 
       // Send data to ProsBuddy API
       try {
-        await sendToProsBuddy(firstName, lastName, email, phone, address, zip, apt, services, 'bestQuote');
+        await sendToProsBuddy(firstName, lastName, email, phone, address, zip, apt, services, 'bestQuote', utmParams);
       } catch (prosbuddyError) {
         strapi.log.error('ProsBuddy API call failed, but continuing with Workiz flow:', prosbuddyError.message);
         // Continue with the flow even if ProsBuddy fails
@@ -239,11 +252,3 @@ module.exports = {
     }
   }
 };
-
-function arrayToCliTableText(data) {
-  if (!Array.isArray(data) || data.length === 0) return '';
-  const head = Object.keys(data[0]);
-  const table = new Table({ head, style: { head: [], border: [] }, wordWrap: true, chars: { 'top': '', 'top-mid': '', 'top-left': '', 'top-right': '', 'bottom': '', 'bottom-mid': '', 'bottom-left': '', 'bottom-right': '', 'left': '', 'left-mid': '', 'mid': '', 'mid-mid': '', 'right': '', 'right-mid': '', 'middle': ' | ' } });
-  data.forEach(row => table.push(head.map(h => row[h])));
-  return table.toString();
-}
