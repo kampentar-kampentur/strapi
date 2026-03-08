@@ -18,6 +18,11 @@
     },
     "isVertical": {
       "type": "boolean"
+    },
+    "selfHostedVideo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.self-hosted-video"
     }
   }
 }

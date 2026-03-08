@@ -257,6 +257,20 @@ export interface OurServicesOurServiceComponent extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedSelfHostedVideo extends Struct.ComponentSchema {
+  collectionName: 'components_shared_self_hosted_videos';
+  info: {
+    displayName: 'self-hosted-video';
+    icon: 'television';
+  };
+  attributes: {
+    thumbnail: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    video1080: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    video480: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    video720: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+  };
+}
+
 export interface TvMountingTypesAddOns extends Struct.ComponentSchema {
   collectionName: 'components_tv_mounting_types_add_ons';
   info: {
@@ -303,6 +317,10 @@ export interface VideoBlockVideoItem extends Struct.ComponentSchema {
   attributes: {
     description: Schema.Attribute.Text;
     isVertical: Schema.Attribute.Boolean;
+    selfHostedVideo: Schema.Attribute.Component<
+      'shared.self-hosted-video',
+      false
+    >;
     title: Schema.Attribute.Text;
     youtubeId: Schema.Attribute.Text;
   };
@@ -329,6 +347,7 @@ declare module '@strapi/strapi' {
       'gallery.types': GalleryTypes;
       'global.seo': GlobalSeo;
       'our-services.our-service-component': OurServicesOurServiceComponent;
+      'shared.self-hosted-video': SharedSelfHostedVideo;
       'tv-mounting-types.add-ons': TvMountingTypesAddOns;
       'tvsizes.test': TvsizesTest;
       'tvsizes.tvsizes': TvsizesTvsizes;
