@@ -101,16 +101,16 @@ module.exports = {
         // Continue with the flow even if ProsBuddy fails
       }
 
-      // sendMessage(
-      //   `📢 <b>New Lead Received!</b>\n\n` +
-      //   `👤 <b>Name:</b> ${name}\n` +
-      //   `📞 <b>Phone:</b> ${phone}\n` +
-      //   `📧 <b>Email:</b> ${email}\n` +
-      //   `🏠 <b>Address:</b> ${address}\n` +
-      //   `📍 <b>ZIP:</b> ${zip}\n` +
-      //   `🔗 <b>Source:</b> TVProWebsite`,
-      //   { parse_mode: 'HTML' }
-      // );
+      sendMessage(
+        `📢 <b>New Lead Received!</b>\n\n` +
+        `👤 <b>Name:</b> ${name}\n` +
+        `📞 <b>Phone:</b> ${phone}\n` +
+        `📧 <b>Email:</b> ${email}\n` +
+        `🏠 <b>Address:</b> ${address}\n` +
+        `📍 <b>ZIP:</b> ${zip}\n` +
+        `🔗 <b>Source:</b> TVProWebsite`,
+        { parse_mode: 'HTML' }
+      );
 
       ctx.send({
         ok: true,
