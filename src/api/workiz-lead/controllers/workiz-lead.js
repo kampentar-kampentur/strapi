@@ -70,7 +70,7 @@ module.exports = {
       if (!apiToken || !authSecret) {
         return ctx.internalServerError('Workiz API credentials are not set in environment variables.');
       }
-      const { phone, name, email, address, zip, utm_source, utm_medium, utm_campaign, utm_content, utm_term } = ctx.request.body.data;
+      const { phone, name, email, address, zip, utm_source, utm_medium, utm_campaign, utm_content, utm_term, source, city } = ctx.request.body.data;
       if (!phone || !name) {
         return ctx.badRequest('Missing "phone" or "name" in request body');
       }
@@ -108,7 +108,8 @@ module.exports = {
         `📧 <b>Email:</b> ${email}\n` +
         `🏠 <b>Address:</b> ${address}\n` +
         `📍 <b>ZIP:</b> ${zip}\n` +
-        `🔗 <b>Source:</b> TVProWebsite`,
+        `🔗 <b>Source:</b> TVProWebsite - ${source}\n` +
+        `🏙️ <b>City:</b> ${city}`,
         { parse_mode: 'HTML' }
       );
 
