@@ -29,6 +29,17 @@ export interface BlocksAboutUs extends Struct.ComponentSchema {
   };
 }
 
+export interface BlocksAreasWeServe extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_areas_we_serves';
+  info: {
+    displayName: 'Areas We Serve';
+    icon: 'plane';
+  };
+  attributes: {
+    use_global: Schema.Attribute.Boolean;
+  };
+}
+
 export interface BlocksCertificate extends Struct.ComponentSchema {
   collectionName: 'components_blocks_certificates';
   info: {
@@ -331,6 +342,7 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'badges.badges': BadgesBadges;
       'blocks.about-us': BlocksAboutUs;
+      'blocks.areas-we-serve': BlocksAreasWeServe;
       'blocks.certificate': BlocksCertificate;
       'blocks.contact-us': BlocksContactUs;
       'blocks.customer-reviews': BlocksCustomerReviews;

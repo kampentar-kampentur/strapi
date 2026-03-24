@@ -468,6 +468,7 @@ export interface ApiCityCity extends Struct.CollectionTypeSchema {
         'blocks.faq',
         'blocks.contact-us',
         'blocks.see-our-work-in-action',
+        'blocks.areas-we-serve',
       ]
     >;
     path: Schema.Attribute.Text;

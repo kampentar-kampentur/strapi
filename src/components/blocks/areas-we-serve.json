@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_blocks_areas_we_serves",
+  "info": {
+    "displayName": "Areas We Serve",
+    "icon": "plane"
+  },
+  "options": {},
+  "attributes": {
+    "use_global": {
+      "type": "boolean"
+    }
+  }
+}
