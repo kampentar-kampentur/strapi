@@ -499,6 +499,7 @@ export interface ApiContactUsContactUs extends Struct.SingleTypeSchema {
       Schema.Attribute.Private;
     facebook: Schema.Attribute.String;
     instagram: Schema.Attribute.String;
+    linkedin: Schema.Attribute.Text;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',

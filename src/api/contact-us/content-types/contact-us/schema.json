@@ -40,6 +40,9 @@
     },
     "x": {
       "type": "string"
+    },
+    "linkedin": {
+      "type": "text"
     }
   }
 }
