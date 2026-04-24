@@ -454,6 +454,7 @@ export interface ApiCityCity extends Struct.CollectionTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::city.city'> &
       Schema.Attribute.Private;
+    metro_city_slug: Schema.Attribute.String;
     page: Schema.Attribute.DynamicZone<
       [
         'blocks.hero',

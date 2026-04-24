@@ -50,6 +50,9 @@
       "type": "component",
       "repeatable": false,
       "component": "cta.cta-override"
+    },
+    "metro_city_slug": {
+      "type": "string"
     }
   }
 }
