@@ -24,6 +24,9 @@
         "videos",
         "audios"
       ]
+    },
+    "order": {
+      "type": "integer"
     }
   }
 }
