@@ -630,6 +630,7 @@ export interface ApiGallerPhotoGallerPhoto extends Struct.CollectionTypeSchema {
       'api::galler-photo.galler-photo'
     > &
       Schema.Attribute.Private;
+    objectPosition: Schema.Attribute.Text;
     order: Schema.Attribute.Integer;
     publishedAt: Schema.Attribute.DateTime;
     type: Schema.Attribute.String;
