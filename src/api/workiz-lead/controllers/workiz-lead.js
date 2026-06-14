@@ -9,6 +9,33 @@ const { sendMessage } = require('../../../services/telegram-bot');
 const apiToken = process.env.WORKIZ_API_TOKEN;
 const authSecret = process.env.WORKIZ_AUTH_SECRET;
 
+// Helper function to format submission date to Houston time (America/Chicago) with maximum precision
+function formatHoustonTime(isoString) {
+  try {
+    const date = isoString ? new Date(isoString) : new Date();
+    if (isNaN(date.getTime())) {
+      return new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' });
+    }
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Chicago',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+    const parts = formatter.formatToParts(date);
+    const partMap = {};
+    parts.forEach(p => partMap[p.type] = p.value);
+    const ms = String(date.getMilliseconds()).padStart(3, '0');
+    return `${partMap.year}-${partMap.month}-${partMap.day} ${partMap.hour}:${partMap.minute}:${partMap.second}.${ms}`;
+  } catch (e) {
+    return new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' });
+  }
+}
+
 // Helper function to send data to ProsBuddy API and save response
 async function sendToProsBuddy(firstName, lastName, email, phone, address, zip, apt, services, endpoint, utmParams = {}) {
   try {
@@ -70,7 +97,7 @@ module.exports = {
       if (!apiToken || !authSecret) {
         return ctx.internalServerError('Workiz API credentials are not set in environment variables.');
       }
-      const { phone, name, email, address, zip, utm_source, utm_medium, utm_campaign, utm_content, utm_term, source, city } = ctx.request.body.data;
+      const { phone, name, email, address, zip, utm_source, utm_medium, utm_campaign, utm_content, utm_term, source, city, submittedAt } = ctx.request.body.data;
       if (!phone || !name) {
         return ctx.badRequest('Missing "phone" or "name" in request body');
       }
@@ -101,6 +128,8 @@ module.exports = {
         // Continue with the flow even if ProsBuddy fails
       }
 
+      const formattedTime = formatHoustonTime(submittedAt);
+
       sendMessage(
         `📢 <b>New Lead Received!</b>\n\n` +
         `👤 <b>Name:</b> ${name}\n` +
@@ -109,7 +138,8 @@ module.exports = {
         `🏠 <b>Address:</b> ${address}\n` +
         `📍 <b>ZIP:</b> ${zip}\n` +
         `🔗 <b>Source:</b> TVProWebsite - ${source}\n` +
-        `🏙️ <b>City:</b> ${city}`,
+        `🏙️ <b>City:</b> ${city}\n` +
+        `📅 <b>Submitted At (Houston):</b> ${formattedTime}`,
         { parse_mode: 'HTML' }
       );
 
@@ -133,7 +163,7 @@ module.exports = {
       if (!data || !data.contactInfo || !data.contactInfo.phone || !data.contactInfo.name) {
         return ctx.badRequest('Missing contactInfo (name or phone) in request body');
       }
-      const { contactInfo, utm_source, utm_medium, utm_campaign, utm_content, utm_term, ...rest } = data;
+      const { contactInfo, utm_source, utm_medium, utm_campaign, utm_content, utm_term, submittedAt, ...rest } = data;
       const utmParams = { utm_source, utm_medium, utm_campaign, utm_content, utm_term };
       let { phone, name, email, address, zip, apt } = contactInfo;
       if (contactInfo.zipApt) {
@@ -158,28 +188,52 @@ module.exports = {
       if (apt) leadData.Unit = apt;
 
       const valueCountPairs = [];
-      if (rest['tv-size'] && rest['tv-size'].tvSelection) {
-        valueCountPairs.push({ value: rest['tv-size'].tvSelection, count: 1 });
+      
+      // Step: tv-size
+      const tvSizeStep = rest['tv-size'] || rest['tvSize'] || {};
+      if (tvSizeStep.tvSelection) {
+        valueCountPairs.push({ value: tvSizeStep.tvSelection, count: 1 });
       }
-      if (rest['tv-size'] && rest['tv-size'].extraTechnicans) {
-        valueCountPairs.push({ value: rest['tv-size'].extraTechnicans, count: 1 });
+      if (tvSizeStep.extraTechnicans) {
+        valueCountPairs.push({ value: tvSizeStep.extraTechnicans, count: 1 });
       }
-      if (rest['additional-services'] && typeof rest['additional-services'] === 'object') {
-        Object.values(rest['additional-services']).forEach(item => {
-          if (item && item.value) valueCountPairs.push({ value: item.value, count: Number(item.count) || 1 });
-        });
+
+      // Step: mounting
+      const mountingStep = rest['mounting'] || {};
+      if (mountingStep.mountType) {
+        valueCountPairs.push({ value: mountingStep.mountType, count: 1 });
       }
-      if (rest['mounting']) {
-        ['mountType'].forEach(field => {
-          if (rest['mounting'][field]) {
-            valueCountPairs.push({ value: rest['mounting'][field], count: 1 });
+
+      // Step: wall
+      const wallStep = rest['wall'] || {};
+      if (wallStep.wallType) {
+        valueCountPairs.push({ value: wallStep.wallType, count: 1 });
+      }
+      if (wallStep.wallTypeProjector) {
+        valueCountPairs.push({ value: wallStep.wallTypeProjector, count: 1 });
+      }
+      if (wallStep.fireplace) {
+        valueCountPairs.push({ value: wallStep.fireplace, count: 1 });
+      }
+      if (wallStep.wires) {
+        valueCountPairs.push({ value: wallStep.wires, count: 1 });
+      }
+
+      // Step: additionalServices
+      const additionalServicesStep = rest['additionalServices'] || rest['additional-services'] || {};
+      if (additionalServicesStep && typeof additionalServicesStep === 'object') {
+        // Support radio fields from the new BestQuoteScheme
+        ['soundbar', 'soundbarMount', 'screenInstallation'].forEach(field => {
+          if (additionalServicesStep[field]) {
+            valueCountPairs.push({ value: additionalServicesStep[field], count: 1 });
           }
         });
-      }
-      if (rest['wall']) {
-        ['wallType', 'wires'].forEach(field => {
-          if (rest['wall'][field]) {
-            valueCountPairs.push({ value: rest['wall'][field], count: 1 });
+
+        // Support for old popular services checkboxes if sent as nested objects
+        Object.keys(additionalServicesStep).forEach(key => {
+          const item = additionalServicesStep[key];
+          if (item && typeof item === 'object' && item.value && !['soundbar', 'soundbarMount', 'screenInstallation'].includes(key)) {
+            valueCountPairs.push({ value: item.value, count: Number(item.count) || 1 });
           }
         });
       }
@@ -231,6 +285,8 @@ module.exports = {
         itemsListText += `\n💰 *Total Price:* $${totalPrice.toFixed(2)}`;
       }
 
+      const formattedTime = formatHoustonTime(submittedAt);
+
       sendMessage(
         `📢 *New Estimate Received!*\n\n` +
         `👤 *Name:* ${name}\n` +
@@ -238,7 +294,8 @@ module.exports = {
         `📧 *Email:* ${email}\n` +
         `🏠 *Address:* ${address}\n` +
         `📍 *ZIP:* ${zip}\n` +
-        `🔗 *Source:* TVProWebsite` +
+        `🔗 *Source:* TVProWebsite\n` +
+        `📅 *Submitted At (Houston):* ${formattedTime}` +
         itemsListText,
         { parse_mode: 'Markdown' }
       );
