@@ -4,7 +4,8 @@
   "info": {
     "singularName": "technician",
     "pluralName": "technicians",
-    "displayName": "technician"
+    "displayName": "technician",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -32,14 +33,33 @@
       "type": "text"
     },
     "photo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
+    },
+    "headline": {
+      "type": "text"
+    },
+    "bestFor": {
+      "type": "text"
+    },
+    "whyRemember": {
+      "type": "text"
+    },
+    "signature": {
+      "type": "text"
+    },
+    "motto": {
+      "type": "text"
+    },
+    "badges": {
+      "type": "text"
     }
   }
 }

@@ -570,6 +570,8 @@ export interface ApiCityCity extends Struct.CollectionTypeSchema {
         'blocks.contact-us',
         'blocks.see-our-work-in-action',
         'blocks.areas-we-serve',
+        'blocks.our-team',
+        'blocks.careers-cta',
       ]
     >;
     path: Schema.Attribute.Text;
@@ -992,6 +994,7 @@ export interface ApiTeamMemberTeamMember extends Struct.CollectionTypeSchema {
 export interface ApiTechnicianTechnician extends Struct.CollectionTypeSchema {
   collectionName: 'technicians';
   info: {
+    description: '';
     displayName: 'technician';
     pluralName: 'technicians';
     singularName: 'technician';
@@ -1000,11 +1003,14 @@ export interface ApiTechnicianTechnician extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    badges: Schema.Attribute.Text;
+    bestFor: Schema.Attribute.Text;
     bio: Schema.Attribute.Text;
     city: Schema.Attribute.Text;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    headline: Schema.Attribute.Text;
     jobsCount: Schema.Attribute.Text;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -1012,15 +1018,18 @@ export interface ApiTechnicianTechnician extends Struct.CollectionTypeSchema {
       'api::technician.technician'
     > &
       Schema.Attribute.Private;
+    motto: Schema.Attribute.Text;
     name: Schema.Attribute.Text;
     photo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     publishedAt: Schema.Attribute.DateTime;
     rating: Schema.Attribute.Text;
     role: Schema.Attribute.Text;
+    signature: Schema.Attribute.Text;
     tags: Schema.Attribute.Text;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    whyRemember: Schema.Attribute.Text;
   };
 }
 
