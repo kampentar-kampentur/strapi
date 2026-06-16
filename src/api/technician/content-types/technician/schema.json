@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "technicians",
+  "info": {
+    "singularName": "technician",
+    "pluralName": "technicians",
+    "displayName": "technician"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "text"
+    },
+    "city": {
+      "type": "text"
+    },
+    "role": {
+      "type": "text"
+    },
+    "rating": {
+      "type": "text"
+    },
+    "jobsCount": {
+      "type": "text"
+    },
+    "bio": {
+      "type": "text"
+    },
+    "tags": {
+      "type": "text"
+    },
+    "photo": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}

@@ -147,6 +147,18 @@ export interface BlocksOurServices extends Struct.ComponentSchema {
   };
 }
 
+export interface BlocksOurTeam extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_our_teams';
+  info: {
+    displayName: 'our-team';
+    icon: 'alien';
+  };
+  attributes: {
+    subTitle: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
+  };
+}
+
 export interface BlocksSeeOurWorkInAction extends Struct.ComponentSchema {
   collectionName: 'components_blocks_see_our_work_in_actions';
   info: {
@@ -268,6 +280,26 @@ export interface OurServicesOurServiceComponent extends Struct.ComponentSchema {
   };
 }
 
+export interface OurTeamTechnician extends Struct.ComponentSchema {
+  collectionName: 'components_our_team_technicians';
+  info: {
+    displayName: 'technician';
+    icon: 'alien';
+  };
+  attributes: {
+    bio: Schema.Attribute.Text;
+    city: Schema.Attribute.Text;
+    experience: Schema.Attribute.Text;
+    jobsCount: Schema.Attribute.Text;
+    motto: Schema.Attribute.Text;
+    name: Schema.Attribute.Text;
+    photo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    rating: Schema.Attribute.Text;
+    role: Schema.Attribute.Text;
+    tags: Schema.Attribute.Text;
+  };
+}
+
 export interface SharedSelfHostedVideo extends Struct.ComponentSchema {
   collectionName: 'components_shared_self_hosted_videos';
   info: {
@@ -350,6 +382,7 @@ declare module '@strapi/strapi' {
       'blocks.gallery-of-work': BlocksGalleryOfWork;
       'blocks.hero': BlocksHero;
       'blocks.our-services': BlocksOurServices;
+      'blocks.our-team': BlocksOurTeam;
       'blocks.see-our-work-in-action': BlocksSeeOurWorkInAction;
       'blocks.tv-mounting-types': BlocksTvMountingTypes;
       'blocks.tv-sizes': BlocksTvSizes;
@@ -359,6 +392,7 @@ declare module '@strapi/strapi' {
       'gallery.types': GalleryTypes;
       'global.seo': GlobalSeo;
       'our-services.our-service-component': OurServicesOurServiceComponent;
+      'our-team.technician': OurTeamTechnician;
       'shared.self-hosted-video': SharedSelfHostedVideo;
       'tv-mounting-types.add-ons': TvMountingTypesAddOns;
       'tvsizes.test': TvsizesTest;

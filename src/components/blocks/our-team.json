@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_blocks_our_teams",
+  "info": {
+    "displayName": "our-team",
+    "icon": "alien"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "text"
+    }
+  }
+}

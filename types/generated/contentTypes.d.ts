@@ -839,6 +839,7 @@ export interface ApiOurServiceOurService extends Struct.SingleTypeSchema {
 export interface ApiOurTeamOurTeam extends Struct.SingleTypeSchema {
   collectionName: 'our_teams';
   info: {
+    description: '';
     displayName: 'Our Team';
     pluralName: 'our-teams';
     singularName: 'our-team';
@@ -952,6 +953,41 @@ export interface ApiTeamMemberTeamMember extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTechnicianTechnician extends Struct.CollectionTypeSchema {
+  collectionName: 'technicians';
+  info: {
+    displayName: 'technician';
+    pluralName: 'technicians';
+    singularName: 'technician';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    bio: Schema.Attribute.Text;
+    city: Schema.Attribute.Text;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    jobsCount: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::technician.technician'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.Text;
+    photo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    publishedAt: Schema.Attribute.DateTime;
+    rating: Schema.Attribute.Text;
+    role: Schema.Attribute.Text;
+    tags: Schema.Attribute.Text;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1580,6 +1616,7 @@ declare module '@strapi/strapi' {
       'api::price-map.price-map': ApiPriceMapPriceMap;
       'api::see-our-work-in-action.see-our-work-in-action': ApiSeeOurWorkInActionSeeOurWorkInAction;
       'api::team-member.team-member': ApiTeamMemberTeamMember;
+      'api::technician.technician': ApiTechnicianTechnician;
       'api::tv-mounting-type.tv-mounting-type': ApiTvMountingTypeTvMountingType;
       'api::tv-size.tv-size': ApiTvSizeTvSize;
       'api::why-customers-choose-us.why-customers-choose-us': ApiWhyCustomersChooseUsWhyCustomersChooseUs;

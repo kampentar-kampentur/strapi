@@ -1,0 +1,47 @@
+{
+  "collectionName": "components_our_team_technicians",
+  "info": {
+    "displayName": "technician",
+    "icon": "alien"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "text"
+    },
+    "city": {
+      "type": "text"
+    },
+    "photo": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "role": {
+      "type": "text"
+    },
+    "experience": {
+      "type": "text"
+    },
+    "rating": {
+      "type": "text"
+    },
+    "jobsCount": {
+      "type": "text"
+    },
+    "bio": {
+      "type": "text"
+    },
+    "tags": {
+      "type": "text"
+    },
+    "motto": {
+      "type": "text"
+    }
+  }
+}

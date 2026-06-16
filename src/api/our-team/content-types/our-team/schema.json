@@ -4,7 +4,8 @@
   "info": {
     "singularName": "our-team",
     "pluralName": "our-teams",
-    "displayName": "Our Team"
+    "displayName": "Our Team",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
