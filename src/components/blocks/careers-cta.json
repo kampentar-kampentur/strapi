@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_blocks_careers_ctas",
+  "info": {
+    "displayName": "careers-cta",
+    "icon": "cog"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "text"
+    },
+    "buttonText": {
+      "type": "text"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "careers_ctas",
+  "info": {
+    "singularName": "careers-cta",
+    "pluralName": "careers-ctas",
+    "displayName": "careers-cta"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "string"
+    },
+    "buttonText": {
+      "type": "text"
+    }
+  }
+}

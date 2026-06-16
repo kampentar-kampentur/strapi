@@ -470,6 +470,36 @@ export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiCareersCtaCareersCta extends Struct.SingleTypeSchema {
+  collectionName: 'careers_ctas';
+  info: {
+    displayName: 'careers-cta';
+    pluralName: 'careers-ctas';
+    singularName: 'careers-cta';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    buttonText: Schema.Attribute.Text;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::careers-cta.careers-cta'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    subTitle: Schema.Attribute.String;
+    title: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCertificateCertificate extends Struct.SingleTypeSchema {
   collectionName: 'certificates';
   info: {
@@ -1601,6 +1631,7 @@ declare module '@strapi/strapi' {
       'api::about-us.about-us': ApiAboutUsAboutUs;
       'api::author.author': ApiAuthorAuthor;
       'api::blog-post.blog-post': ApiBlogPostBlogPost;
+      'api::careers-cta.careers-cta': ApiCareersCtaCareersCta;
       'api::certificate.certificate': ApiCertificateCertificate;
       'api::city.city': ApiCityCity;
       'api::contact-us.contact-us': ApiContactUsContactUs;

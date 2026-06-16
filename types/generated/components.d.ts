@@ -40,6 +40,19 @@ export interface BlocksAreasWeServe extends Struct.ComponentSchema {
   };
 }
 
+export interface BlocksCareersCta extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_careers_ctas';
+  info: {
+    displayName: 'careers-cta';
+    icon: 'cog';
+  };
+  attributes: {
+    buttonText: Schema.Attribute.Text;
+    subTitle: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
+  };
+}
+
 export interface BlocksCertificate extends Struct.ComponentSchema {
   collectionName: 'components_blocks_certificates';
   info: {
@@ -375,6 +388,7 @@ declare module '@strapi/strapi' {
       'badges.badges': BadgesBadges;
       'blocks.about-us': BlocksAboutUs;
       'blocks.areas-we-serve': BlocksAreasWeServe;
+      'blocks.careers-cta': BlocksCareersCta;
       'blocks.certificate': BlocksCertificate;
       'blocks.contact-us': BlocksContactUs;
       'blocks.customer-reviews': BlocksCustomerReviews;
