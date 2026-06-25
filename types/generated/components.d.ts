@@ -40,6 +40,18 @@ export interface BlocksAreasWeServe extends Struct.ComponentSchema {
   };
 }
 
+export interface BlocksBriefServices extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_brief_services';
+  info: {
+    displayName: 'brief-services';
+    icon: 'book';
+  };
+  attributes: {
+    subTitle: Schema.Attribute.Text;
+    title: Schema.Attribute.String;
+  };
+}
+
 export interface BlocksCareersCta extends Struct.ComponentSchema {
   collectionName: 'components_blocks_careers_ctas';
   info: {
@@ -185,6 +197,19 @@ export interface BlocksSeeOurWorkInAction extends Struct.ComponentSchema {
   };
 }
 
+export interface BlocksTvCountPicker extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_tv_count_pickers';
+  info: {
+    displayName: 'tv-count-picker';
+    icon: 'bold';
+  };
+  attributes: {
+    cards: Schema.Attribute.Component<'tv-count-card.tv-count-card', true>;
+    subTitle: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
+  };
+}
+
 export interface BlocksTvMountingTypes extends Struct.ComponentSchema {
   collectionName: 'components_blocks_tv_mounting_types';
   info: {
@@ -209,6 +234,17 @@ export interface BlocksTvSizes extends Struct.ComponentSchema {
     subTitle: Schema.Attribute.Text;
     title: Schema.Attribute.Text;
     tvsizes: Schema.Attribute.Component<'tvsizes.tvsizes', true>;
+  };
+}
+
+export interface BlocksUtpBar extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_utp_bars';
+  info: {
+    displayName: 'utp-bar';
+    icon: 'bell';
+  };
+  attributes: {
+    items: Schema.Attribute.Component<'utp-bar.utp-bar-items', true>;
   };
 }
 
@@ -327,6 +363,19 @@ export interface SharedSelfHostedVideo extends Struct.ComponentSchema {
   };
 }
 
+export interface TvCountCardTvCountCard extends Struct.ComponentSchema {
+  collectionName: 'components_tv_count_card_tv_count_cards';
+  info: {
+    description: '';
+    displayName: 'tv-count-card';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
+    tvCount: Schema.Attribute.Text;
+  };
+}
+
 export interface TvMountingTypesAddOns extends Struct.ComponentSchema {
   collectionName: 'components_tv_mounting_types_add_ons';
   info: {
@@ -363,6 +412,21 @@ export interface TvsizesTvsizes extends Struct.ComponentSchema {
   };
 }
 
+export interface UtpBarUtpBarItems extends Struct.ComponentSchema {
+  collectionName: 'components_utp_bar_utp_bar_items';
+  info: {
+    description: '';
+    displayName: 'utp-bar-items';
+    icon: 'apps';
+  };
+  attributes: {
+    iconName: Schema.Attribute.Text;
+    isReviews: Schema.Attribute.Boolean;
+    number: Schema.Attribute.Text;
+    text: Schema.Attribute.Text;
+  };
+}
+
 export interface VideoBlockVideoItem extends Struct.ComponentSchema {
   collectionName: 'components_video_block_video_items';
   info: {
@@ -388,6 +452,7 @@ declare module '@strapi/strapi' {
       'badges.badges': BadgesBadges;
       'blocks.about-us': BlocksAboutUs;
       'blocks.areas-we-serve': BlocksAreasWeServe;
+      'blocks.brief-services': BlocksBriefServices;
       'blocks.careers-cta': BlocksCareersCta;
       'blocks.certificate': BlocksCertificate;
       'blocks.contact-us': BlocksContactUs;
@@ -398,8 +463,10 @@ declare module '@strapi/strapi' {
       'blocks.our-services': BlocksOurServices;
       'blocks.our-team': BlocksOurTeam;
       'blocks.see-our-work-in-action': BlocksSeeOurWorkInAction;
+      'blocks.tv-count-picker': BlocksTvCountPicker;
       'blocks.tv-mounting-types': BlocksTvMountingTypes;
       'blocks.tv-sizes': BlocksTvSizes;
+      'blocks.utp-bar': BlocksUtpBar;
       'blocks.why-customers-choose-us': BlocksWhyCustomersChooseUs;
       'cta.cta-override': CtaCtaOverride;
       'faq.faqs': FaqFaqs;
@@ -408,9 +475,11 @@ declare module '@strapi/strapi' {
       'our-services.our-service-component': OurServicesOurServiceComponent;
       'our-team.technician': OurTeamTechnician;
       'shared.self-hosted-video': SharedSelfHostedVideo;
+      'tv-count-card.tv-count-card': TvCountCardTvCountCard;
       'tv-mounting-types.add-ons': TvMountingTypesAddOns;
       'tvsizes.test': TvsizesTest;
       'tvsizes.tvsizes': TvsizesTvsizes;
+      'utp-bar.utp-bar-items': UtpBarUtpBarItems;
       'video-block.video-item': VideoBlockVideoItem;
     }
   }

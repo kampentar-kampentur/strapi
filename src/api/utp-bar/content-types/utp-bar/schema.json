@@ -1,0 +1,20 @@
+{
+  "kind": "singleType",
+  "collectionName": "utp_bars",
+  "info": {
+    "singularName": "utp-bar",
+    "pluralName": "utp-bars",
+    "displayName": "Utp Bar"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "items": {
+      "displayName": "utp-bar-items",
+      "type": "component",
+      "repeatable": true,
+      "component": "utp-bar.utp-bar-items"
+    }
+  }
+}

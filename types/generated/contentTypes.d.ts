@@ -573,6 +573,9 @@ export interface ApiCityCity extends Struct.CollectionTypeSchema {
         'blocks.areas-we-serve',
         'blocks.our-team',
         'blocks.careers-cta',
+        'blocks.utp-bar',
+        'blocks.tv-count-picker',
+        'blocks.brief-services',
       ]
     >;
     path: Schema.Attribute.Text;
@@ -1034,6 +1037,36 @@ export interface ApiTechnicianTechnician extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiTvCountPickerTvCountPicker extends Struct.SingleTypeSchema {
+  collectionName: 'tv_count_pickers';
+  info: {
+    displayName: 'tv-count-picker';
+    pluralName: 'tv-count-pickers';
+    singularName: 'tv-count-picker';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    cards: Schema.Attribute.Component<'tv-count-card.tv-count-card', true>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::tv-count-picker.tv-count-picker'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    subTitle: Schema.Attribute.Text;
+    title: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiTvMountingTypeTvMountingType
   extends Struct.SingleTypeSchema {
   collectionName: 'tv_mounting_types';
@@ -1092,6 +1125,34 @@ export interface ApiTvSizeTvSize extends Struct.SingleTypeSchema {
     subTitle: Schema.Attribute.Text;
     title: Schema.Attribute.Text;
     tvsizes: Schema.Attribute.Component<'tvsizes.tvsizes', true>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiUtpBarUtpBar extends Struct.SingleTypeSchema {
+  collectionName: 'utp_bars';
+  info: {
+    displayName: 'Utp Bar';
+    pluralName: 'utp-bars';
+    singularName: 'utp-bar';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    items: Schema.Attribute.Component<'utp-bar.utp-bar-items', true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::utp-bar.utp-bar'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1658,8 +1719,10 @@ declare module '@strapi/strapi' {
       'api::see-our-work-in-action.see-our-work-in-action': ApiSeeOurWorkInActionSeeOurWorkInAction;
       'api::team-member.team-member': ApiTeamMemberTeamMember;
       'api::technician.technician': ApiTechnicianTechnician;
+      'api::tv-count-picker.tv-count-picker': ApiTvCountPickerTvCountPicker;
       'api::tv-mounting-type.tv-mounting-type': ApiTvMountingTypeTvMountingType;
       'api::tv-size.tv-size': ApiTvSizeTvSize;
+      'api::utp-bar.utp-bar': ApiUtpBarUtpBar;
       'api::why-customers-choose-us.why-customers-choose-us': ApiWhyCustomersChooseUsWhyCustomersChooseUs;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

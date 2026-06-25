@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_tv_count_card_tv_count_cards",
+  "info": {
+    "displayName": "tv-count-card",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "description": {
+      "type": "text"
+    },
+    "tvCount": {
+      "type": "text"
+    }
+  }
+}

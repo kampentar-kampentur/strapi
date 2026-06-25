@@ -28,7 +28,10 @@
         "blocks.see-our-work-in-action",
         "blocks.areas-we-serve",
         "blocks.our-team",
-        "blocks.careers-cta"
+        "blocks.careers-cta",
+        "blocks.utp-bar",
+        "blocks.tv-count-picker",
+        "blocks.brief-services"
       ]
     },
     "path": {

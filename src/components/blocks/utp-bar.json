@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_blocks_utp_bars",
+  "info": {
+    "displayName": "utp-bar",
+    "icon": "bell"
+  },
+  "options": {},
+  "attributes": {
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "utp-bar.utp-bar-items"
+    }
+  }
+}

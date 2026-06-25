@@ -1,0 +1,26 @@
+{
+  "kind": "singleType",
+  "collectionName": "tv_count_pickers",
+  "info": {
+    "singularName": "tv-count-picker",
+    "pluralName": "tv-count-pickers",
+    "displayName": "tv-count-picker"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "text"
+    },
+    "cards": {
+      "displayName": "tv-count-card",
+      "type": "component",
+      "repeatable": true,
+      "component": "tv-count-card.tv-count-card"
+    }
+  }
+}

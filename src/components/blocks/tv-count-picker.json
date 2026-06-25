@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_blocks_tv_count_pickers",
+  "info": {
+    "displayName": "tv-count-picker",
+    "icon": "bold"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "text"
+    },
+    "subTitle": {
+      "type": "text"
+    },
+    "cards": {
+      "type": "component",
+      "repeatable": true,
+      "component": "tv-count-card.tv-count-card"
+    }
+  }
+}

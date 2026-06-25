@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_utp_bar_utp_bar_items",
+  "info": {
+    "displayName": "utp-bar-items",
+    "icon": "apps",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "number": {
+      "type": "text"
+    },
+    "text": {
+      "type": "text"
+    },
+    "iconName": {
+      "type": "text"
+    },
+    "isReviews": {
+      "type": "boolean"
+    }
+  }
+}
