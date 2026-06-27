@@ -1014,6 +1014,7 @@ export interface ApiTechnicianTechnician extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    department: Schema.Attribute.Text;
     headline: Schema.Attribute.Text;
     jobsCount: Schema.Attribute.Text;
     locale: Schema.Attribute.String & Schema.Attribute.Private;

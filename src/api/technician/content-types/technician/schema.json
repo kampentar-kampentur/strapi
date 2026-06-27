@@ -60,6 +60,9 @@
     },
     "badges": {
       "type": "text"
+    },
+    "department": {
+      "type": "text"
     }
   }
 }
