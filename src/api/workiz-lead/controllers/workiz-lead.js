@@ -219,6 +219,24 @@ module.exports = {
         valueCountPairs.push({ value: wallStep.wires, count: 1 });
       }
 
+      // Step: fireplace (New Schema)
+      const fireplaceStep = rest['fireplace'] || {};
+      if (fireplaceStep.fireplace) {
+        // Avoid duplicate if already parsed from old structure
+        if (!valueCountPairs.some(p => p.value === fireplaceStep.fireplace)) {
+          valueCountPairs.push({ value: fireplaceStep.fireplace, count: 1 });
+        }
+      }
+
+      // Step: wires (New Schema)
+      const wiresStep = rest['wires'] || {};
+      if (wiresStep.wires) {
+        // Avoid duplicate if already parsed from old structure
+        if (!valueCountPairs.some(p => p.value === wiresStep.wires)) {
+          valueCountPairs.push({ value: wiresStep.wires, count: 1 });
+        }
+      }
+
       // Step: additionalServices
       const additionalServicesStep = rest['additionalServices'] || rest['additional-services'] || {};
       if (additionalServicesStep && typeof additionalServicesStep === 'object') {
