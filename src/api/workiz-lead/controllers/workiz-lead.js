@@ -9,6 +9,63 @@ const { sendMessage } = require('../../../services/telegram-bot');
 const apiToken = process.env.WORKIZ_API_TOKEN;
 const authSecret = process.env.WORKIZ_AUTH_SECRET;
 
+const staticPriceMap = {
+  // tv-size
+  'under31': { price: 69, label: 'Under 31"', workizId: 1003 },
+  'upTo31': { price: 69, label: 'Under 31"', workizId: 1003 },
+  '32-59': { price: 125, label: '32"-59"', workizId: 1004 },
+  '60-69': { price: 144, label: '60"-69"', workizId: 1005 },
+  '70-85': { price: 149, label: '70"-85"', workizId: 1006 },
+  'over-86': { price: 189, label: '98"-100"', workizId: 1007 },
+  'notSure_tvSelection': { price: 125, label: 'Not Sure', workizId: 1004 },
+
+  // mounting
+  'alreadyThere': { price: 0, label: 'Already there', workizId: 1013 },
+  'fixed': { price: 44, label: 'Fixed Mount', workizId: 1014 },
+  'tilting': { price: 52, label: 'Tilt Mount', workizId: 1016 },
+  'fullMotion': { price: 69, label: 'Full-Motion Mount', workizId: 1012 },
+  'corner': { price: 69, label: 'Corner Mount', workizId: 1015 },
+  'ceilingMount': { price: 69, label: 'Ceiling Mount', workizId: 1036 },
+  'ultraSlim': { price: 79, label: 'Ultra Slim 0.3', workizId: 1040 },
+  'needHelp': { price: 0, label: 'Need help choosing', workizId: 1013 },
+
+  // wall
+  'drywall': { price: 0, label: 'Drywall', workizId: 1017 },
+  'stoneBrickConcrete': { price: 49, label: 'Brick / Stone / Concrete', workizId: 1018 },
+  'ceiling': { price: 39, label: 'Ceiling', workizId: 1044 },
+  'tile': { price: 69, label: 'Tile', workizId: 1043 },
+  'metalStuds': { price: 30, label: 'Metal Studs', workizId: 1042 },
+  'notSure_wallType': { price: 0, label: 'Not Sure', workizId: 1017 },
+
+  // fireplace
+  'fireplace_yes': { price: 32, label: 'Above Fireplace', workizId: 1045 },
+  'fireplaceYes': { price: 32, label: 'Above Fireplace', workizId: 1045 },
+  'fireplace_no': { price: 0, label: 'No', workizId: 1017 },
+
+  // wires
+  'open': { price: 0, label: 'Exposed', workizId: 1017 },
+  'cableChannelDrywall': { price: 43, label: 'Cable Channel', workizId: 1047 },
+  'wallDrywall': { price: 93, label: 'Put it in the wall', workizId: 1048 },
+  'socketDrywall': { price: 129, label: 'In wall with socket', workizId: 1049 },
+  'wallFireplace': { price: 109, label: 'In-Wall Concealment (Fireplace)', workizId: 1051 },
+  'socketFireplace': { price: 149, label: 'In Wall with Socket (Fireplace)', workizId: 1052 },
+  'cableChannelBrick': { price: 52, label: 'Cable channel (Brick)', workizId: 1053 },
+  'wallBrick': { price: 249, label: 'In-Wall Concealment (Brick)', workizId: 1054 },
+  'socketBrick': { price: 289, label: 'In-Wall with Socket (Brick)', workizId: 1055 },
+  'wires_yes': { price: 109, label: 'Yes, hide all wires', workizId: 1051 },
+  'wires_no': { price: 0, label: 'No, standard installation', workizId: 1017 },
+  'wires_notSure': { price: 0, label: 'Not Sure', workizId: 1017 },
+
+  // addons
+  'soundbar': { price: 69, label: 'Soundbar Installation', workizId: 1022 },
+  'soundbarYes': { price: 69, label: 'Soundbar Installation', workizId: 1022 },
+  'gamingConsole': { price: 50, label: 'Gaming Console Setup', workizId: 1024 },
+  'ledLight': { price: 39, label: 'LED Light Strip Installation', workizId: 1026 },
+  'installLEDLight': { price: 39, label: 'LED Light Strip Installation', workizId: 1026 },
+  'paintings': { price: 39, label: 'Install Painting or Mirrors', workizId: 1030 },
+  'installPaintingsAndDecor': { price: 39, label: 'Install Painting or Mirrors', workizId: 1030 }
+};
+
 // Helper function to format submission date to Houston time (America/Chicago) with maximum precision
 function formatHoustonTime(isoString) {
   try {
@@ -192,48 +249,61 @@ module.exports = {
       // Step: tv-size
       const tvSizeStep = rest['tv-size'] || rest['tvSize'] || {};
       if (tvSizeStep.tvSelection) {
-        valueCountPairs.push({ value: tvSizeStep.tvSelection, count: 1 });
+        const key = tvSizeStep.tvSelection === 'notSure' ? 'notSure_tvSelection' : tvSizeStep.tvSelection;
+        valueCountPairs.push({ key, value: tvSizeStep.tvSelection, count: 1 });
       }
       if (tvSizeStep.extraTechnicans) {
-        valueCountPairs.push({ value: tvSizeStep.extraTechnicans, count: 1 });
+        valueCountPairs.push({ key: tvSizeStep.extraTechnicans, value: tvSizeStep.extraTechnicans, count: 1 });
       }
 
       // Step: mounting
       const mountingStep = rest['mounting'] || {};
       if (mountingStep.mountType) {
-        valueCountPairs.push({ value: mountingStep.mountType, count: 1 });
+        valueCountPairs.push({ key: mountingStep.mountType, value: mountingStep.mountType, count: 1 });
       }
 
       // Step: wall
       const wallStep = rest['wall'] || {};
       if (wallStep.wallType) {
-        valueCountPairs.push({ value: wallStep.wallType, count: 1 });
+        const key = wallStep.wallType === 'notSure' ? 'notSure_wallType' : wallStep.wallType;
+        valueCountPairs.push({ key, value: wallStep.wallType, count: 1 });
       }
       if (wallStep.wallTypeProjector) {
-        valueCountPairs.push({ value: wallStep.wallTypeProjector, count: 1 });
+        valueCountPairs.push({ key: wallStep.wallTypeProjector, value: wallStep.wallTypeProjector, count: 1 });
       }
       if (wallStep.fireplace) {
-        valueCountPairs.push({ value: wallStep.fireplace, count: 1 });
+        const key = wallStep.fireplace === 'yes' ? 'fireplace_yes' : wallStep.fireplace === 'no' ? 'fireplace_no' : wallStep.fireplace;
+        valueCountPairs.push({ key, value: wallStep.fireplace, count: 1 });
       }
       if (wallStep.wires) {
-        valueCountPairs.push({ value: wallStep.wires, count: 1 });
+        const key = wallStep.wires === 'yes' ? 'wires_yes' : wallStep.wires === 'no' ? 'wires_no' : wallStep.wires === 'notSure' ? 'wires_notSure' : wallStep.wires;
+        valueCountPairs.push({ key, value: wallStep.wires, count: 1 });
       }
 
       // Step: fireplace (New Schema)
       const fireplaceStep = rest['fireplace'] || {};
       if (fireplaceStep.fireplace) {
+        const key = fireplaceStep.fireplace === 'yes' ? 'fireplace_yes' : fireplaceStep.fireplace === 'no' ? 'fireplace_no' : fireplaceStep.fireplace;
         // Avoid duplicate if already parsed from old structure
-        if (!valueCountPairs.some(p => p.value === fireplaceStep.fireplace)) {
-          valueCountPairs.push({ value: fireplaceStep.fireplace, count: 1 });
+        if (!valueCountPairs.some(p => p.key === key)) {
+          valueCountPairs.push({ key, value: fireplaceStep.fireplace, count: 1 });
         }
+      }
+      if (fireplaceStep.addons && Array.isArray(fireplaceStep.addons)) {
+        fireplaceStep.addons.forEach(addon => {
+          if (!valueCountPairs.some(p => p.key === addon)) {
+            valueCountPairs.push({ key: addon, value: addon, count: 1 });
+          }
+        });
       }
 
       // Step: wires (New Schema)
       const wiresStep = rest['wires'] || {};
       if (wiresStep.wires) {
+        const key = wiresStep.wires === 'yes' ? 'wires_yes' : wiresStep.wires === 'no' ? 'wires_no' : wiresStep.wires === 'notSure' ? 'wires_notSure' : wiresStep.wires;
         // Avoid duplicate if already parsed from old structure
-        if (!valueCountPairs.some(p => p.value === wiresStep.wires)) {
-          valueCountPairs.push({ value: wiresStep.wires, count: 1 });
+        if (!valueCountPairs.some(p => p.key === key)) {
+          valueCountPairs.push({ key, value: wiresStep.wires, count: 1 });
         }
       }
 
@@ -243,7 +313,7 @@ module.exports = {
         // Support radio fields from the new BestQuoteScheme
         ['soundbar', 'soundbarMount', 'screenInstallation'].forEach(field => {
           if (additionalServicesStep[field]) {
-            valueCountPairs.push({ value: additionalServicesStep[field], count: 1 });
+            valueCountPairs.push({ key: additionalServicesStep[field], value: additionalServicesStep[field], count: 1 });
           }
         });
 
@@ -251,32 +321,50 @@ module.exports = {
         Object.keys(additionalServicesStep).forEach(key => {
           const item = additionalServicesStep[key];
           if (item && typeof item === 'object' && item.value && !['soundbar', 'soundbarMount', 'screenInstallation'].includes(key)) {
-            valueCountPairs.push({ value: item.value, count: Number(item.count) || 1 });
+            valueCountPairs.push({ key: item.value, value: item.value, count: Number(item.count) || 1 });
           }
         });
       }
 
-      const priceMapItems = await strapi.db.query('api::price-map.price-map').findMany();
+      let priceMapItems = [];
+      try {
+        priceMapItems = await strapi.db.query('api::price-map.price-map').findMany();
+      } catch (err) {
+        strapi.log.error('Could not fetch price-map from database, using static fallback:', err.message);
+      }
+      
       const lineItems = [];
       const services = [];
       const itemsWithPrices = [];
       let totalPrice = 0;
 
-      valueCountPairs.forEach(({ value, count }) => {
-        const priceMap = priceMapItems.find(p => p.value === value);
-        if (priceMap && priceMap.workizId) {
+      valueCountPairs.forEach(({ key, value, count }) => {
+        let resolvedItem = staticPriceMap[key || value];
+        
+        if (!resolvedItem) {
+          const priceMap = priceMapItems.find(p => p.value === value);
+          if (priceMap) {
+            resolvedItem = {
+              price: Number(priceMap.price) || 0,
+              label: priceMap.itemName || priceMap.label || value,
+              workizId: priceMap.workizId
+            };
+          }
+        }
+        
+        if (resolvedItem && resolvedItem.workizId) {
           for (let i = 0; i < count; i++) {
-            lineItems.push({ Id: priceMap.workizId.toString() });
+            lineItems.push({ Id: resolvedItem.workizId.toString() });
             services.push({
-              id: parseInt(priceMap.workizId),
-              name: priceMap.itemName || value  // Use itemName if available, fallback to value
+              id: parseInt(resolvedItem.workizId),
+              name: resolvedItem.label
             });
           }
-          const itemPrice = priceMap.price || 0;
+          const itemPrice = resolvedItem.price || 0;
           const itemTotal = itemPrice * count;
           totalPrice += itemTotal;
           itemsWithPrices.push({
-            name: priceMap.itemName || priceMap.label || value,
+            name: resolvedItem.label,
             price: itemPrice,
             count: count,
             total: itemTotal
