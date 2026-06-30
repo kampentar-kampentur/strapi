@@ -1,0 +1,149 @@
+{
+  "kind": "collectionType",
+  "collectionName": "technician_applications",
+  "info": {
+    "singularName": "technician-application",
+    "pluralName": "technician-applications",
+    "displayName": "Technician Application",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "phone": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "city": {
+      "type": "string",
+      "required": true
+    },
+    "workAuth": {
+      "type": "enumeration",
+      "enum": [
+        "Yes",
+        "No"
+      ],
+      "required": true
+    },
+    "over18": {
+      "type": "enumeration",
+      "enum": [
+        "Yes",
+        "No"
+      ],
+      "required": true
+    },
+    "driverLicense": {
+      "type": "enumeration",
+      "enum": [
+        "Yes",
+        "No"
+      ],
+      "required": true
+    },
+    "languages": {
+      "type": "string"
+    },
+    "experienceLevel": {
+      "type": "string"
+    },
+    "previousWork": {
+      "type": "text"
+    },
+    "servicesPerformed": {
+      "type": "string"
+    },
+    "hasTools": {
+      "type": "enumeration",
+      "enum": [
+        "Yes",
+        "No",
+        "Some tools"
+      ]
+    },
+    "q1Studs": {
+      "type": "string"
+    },
+    "q2Power": {
+      "type": "string"
+    },
+    "schedule": {
+      "type": "string"
+    },
+    "daysPerWeek": {
+      "type": "string"
+    },
+    "drivingRange": {
+      "type": "enumeration",
+      "enum": [
+        "Yes",
+        "No"
+      ]
+    },
+    "desiredIncome": {
+      "type": "string"
+    },
+    "insurance": {
+      "type": "string"
+    },
+    "backgroundCheck": {
+      "type": "enumeration",
+      "enum": [
+        "Yes",
+        "No"
+      ]
+    },
+    "about": {
+      "type": "text"
+    },
+    "strengths": {
+      "type": "text"
+    },
+    "weaknesses": {
+      "type": "text"
+    },
+    "file": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "utm_source": {
+      "type": "string"
+    },
+    "utm_medium": {
+      "type": "string"
+    },
+    "utm_campaign": {
+      "type": "string"
+    },
+    "utm_term": {
+      "type": "string"
+    },
+    "utm_content": {
+      "type": "string"
+    },
+    "gclid": {
+      "type": "string"
+    },
+    "msclkid": {
+      "type": "string"
+    },
+    "fbclid": {
+      "type": "string"
+    }
+  }
+}

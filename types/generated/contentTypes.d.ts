@@ -995,6 +995,70 @@ export interface ApiTeamMemberTeamMember extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiTechnicianApplicationTechnicianApplication
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'technician_applications';
+  info: {
+    description: '';
+    displayName: 'Technician Application';
+    pluralName: 'technician-applications';
+    singularName: 'technician-application';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    about: Schema.Attribute.Text;
+    backgroundCheck: Schema.Attribute.Enumeration<['Yes', 'No']>;
+    city: Schema.Attribute.String & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    daysPerWeek: Schema.Attribute.String;
+    desiredIncome: Schema.Attribute.String;
+    driverLicense: Schema.Attribute.Enumeration<['Yes', 'No']> &
+      Schema.Attribute.Required;
+    drivingRange: Schema.Attribute.Enumeration<['Yes', 'No']>;
+    email: Schema.Attribute.Email & Schema.Attribute.Required;
+    experienceLevel: Schema.Attribute.String;
+    fbclid: Schema.Attribute.String;
+    file: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
+    gclid: Schema.Attribute.String;
+    hasTools: Schema.Attribute.Enumeration<['Yes', 'No', 'Some tools']>;
+    insurance: Schema.Attribute.String;
+    languages: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::technician-application.technician-application'
+    > &
+      Schema.Attribute.Private;
+    msclkid: Schema.Attribute.String;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    over18: Schema.Attribute.Enumeration<['Yes', 'No']> &
+      Schema.Attribute.Required;
+    phone: Schema.Attribute.String & Schema.Attribute.Required;
+    previousWork: Schema.Attribute.Text;
+    publishedAt: Schema.Attribute.DateTime;
+    q1Studs: Schema.Attribute.String;
+    q2Power: Schema.Attribute.String;
+    schedule: Schema.Attribute.String;
+    servicesPerformed: Schema.Attribute.String;
+    strengths: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    utm_campaign: Schema.Attribute.String;
+    utm_content: Schema.Attribute.String;
+    utm_medium: Schema.Attribute.String;
+    utm_source: Schema.Attribute.String;
+    utm_term: Schema.Attribute.String;
+    weaknesses: Schema.Attribute.Text;
+    workAuth: Schema.Attribute.Enumeration<['Yes', 'No']> &
+      Schema.Attribute.Required;
+  };
+}
+
 export interface ApiTechnicianTechnician extends Struct.CollectionTypeSchema {
   collectionName: 'technicians';
   info: {
@@ -1719,6 +1783,7 @@ declare module '@strapi/strapi' {
       'api::price-map.price-map': ApiPriceMapPriceMap;
       'api::see-our-work-in-action.see-our-work-in-action': ApiSeeOurWorkInActionSeeOurWorkInAction;
       'api::team-member.team-member': ApiTeamMemberTeamMember;
+      'api::technician-application.technician-application': ApiTechnicianApplicationTechnicianApplication;
       'api::technician.technician': ApiTechnicianTechnician;
       'api::tv-count-picker.tv-count-picker': ApiTvCountPickerTvCountPicker;
       'api::tv-mounting-type.tv-mounting-type': ApiTvMountingTypeTvMountingType;
