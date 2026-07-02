@@ -1,56 +1,338 @@
 [
-  { "value": "under31", "workizId": 1003, "category": "tvSelection", "price": 69, "label": "Under 31\"" },
-  { "value": "32-59", "workizId": 1004, "category": "tvSelection", "price": 125, "label": "32\"-59\"" },
-  { "value": "60-69", "workizId": 1005, "category": "tvSelection", "price": 144, "label": "60\"-69\"" },
-  { "value": "70-85", "workizId": 1006, "category": "tvSelection", "price": 149, "label": "70\"-85\"" },
-  { "value": "over-86", "workizId": 1007, "category": "tvSelection", "price": 189, "label": "98\"-100\"" },
-  { "value": "notSure", "workizId": 1004, "category": "tvSelection", "price": 125, "label": "Not Sure" },
-  { "value": "frameTvUpTo60", "workizId": 1008, "category": "tvSelection", "price": 174, "label": "Frame TV up to 60 inch" },
-  { "value": "frameTvOver65", "workizId": 1009, "category": "tvSelection", "price": 184, "label": "Frame TV over 65 inch" },
-  { "value": "projectorsNScreens", "workizId": 1010, "category": "tvSelection", "price": 189, "label": "Projectors" },
+  {
+    "value": "under31",
+    "workizId": 1003,
+    "category": "tvSelection",
+    "price": 69,
+    "label": "Under 31\""
+  },
+  {
+    "value": "32-59",
+    "workizId": 1004,
+    "category": "tvSelection",
+    "price": 125,
+    "label": "32\"-59\""
+  },
+  {
+    "value": "60-69",
+    "workizId": 1005,
+    "category": "tvSelection",
+    "price": 144,
+    "label": "60\"-69\""
+  },
+  {
+    "value": "70-85",
+    "workizId": 1006,
+    "category": "tvSelection",
+    "price": 149,
+    "label": "70\"-85\""
+  },
+  {
+    "value": "over-86",
+    "workizId": 1007,
+    "category": "tvSelection",
+    "price": 189,
+    "label": "98\"-100\""
+  },
+  {
+    "value": "notSure",
+    "workizId": 1004,
+    "category": "tvSelection",
+    "price": 125,
+    "label": "Not Sure"
+  },
+  {
+    "value": "frameTvUpTo60",
+    "workizId": 1008,
+    "category": "tvSelection",
+    "price": 174,
+    "label": "Frame TV up to 60 inch"
+  },
+  {
+    "value": "frameTvOver65",
+    "workizId": 1009,
+    "category": "tvSelection",
+    "price": 184,
+    "label": "Frame TV over 65 inch"
+  },
+  {
+    "value": "projectorsNScreens",
+    "workizId": 1010,
+    "category": "tvSelection",
+    "price": 189,
+    "label": "Projectors"
+  },
 
-  { "value": "extraTechniciansYes", "workizId": 1011, "category": "extraTechnicans", "price": 59, "label": "2 Tech (Full service)" },
+  {
+    "value": "extraTechniciansYes",
+    "workizId": 1011,
+    "category": "extraTechnicans",
+    "price": 59,
+    "label": "2 Tech (Full service)"
+  },
 
-  { "value": "alreadyThere", "workizId": 1013, "category": "mountType", "price": 0, "label": "Already there" },
-  { "value": "fixed", "workizId": 1014, "category": "mountType", "price": 44, "label": "Fixed Mount" },
-  { "value": "tilting", "workizId": 1016, "category": "mountType", "price": 52, "label": "Tilt Mount" },
-  { "value": "fullMotion", "workizId": 1012, "category": "mountType", "price": 69, "label": "Full-Motion Mount" },
-  { "value": "corner", "workizId": 1015, "category": "mountType", "price": 69, "label": "Corner Mount" },
-  { "value": "ceilingMount", "workizId": 1036, "category": "mountType", "price": 69, "label": "Ceiling Mount" },
-  { "value": "ultraSlim", "workizId": 1040, "category": "mountType", "price": 79, "label": "Ultra Slim 0.3" },
-  { "value": "needHelp", "workizId": 1013, "category": "mountType", "price": 0, "label": "Need help choosing" },
+  {
+    "value": "alreadyThere",
+    "workizId": 1013,
+    "category": "mountType",
+    "price": 0,
+    "label": "Already there"
+  },
+  {
+    "value": "fixed",
+    "workizId": 1014,
+    "category": "mountType",
+    "price": 44,
+    "label": "Fixed Mount"
+  },
+  {
+    "value": "tilting",
+    "workizId": 1016,
+    "category": "mountType",
+    "price": 52,
+    "label": "Tilt Mount"
+  },
+  {
+    "value": "fullMotion",
+    "workizId": 1012,
+    "category": "mountType",
+    "price": 69,
+    "label": "Full-Motion Mount"
+  },
+  {
+    "value": "corner",
+    "workizId": 1015,
+    "category": "mountType",
+    "price": 69,
+    "label": "Corner Mount"
+  },
+  {
+    "value": "ceilingMount",
+    "workizId": 1036,
+    "category": "mountType",
+    "price": 69,
+    "label": "Ceiling Mount"
+  },
+  {
+    "value": "ultraSlim",
+    "workizId": 1040,
+    "category": "mountType",
+    "price": 79,
+    "label": "Ultra Slim 0.3"
+  },
+  {
+    "value": "needHelp",
+    "workizId": 1013,
+    "category": "mountType",
+    "price": 0,
+    "label": "Need help choosing"
+  },
 
-  { "value": "drywall", "workizId": 1017, "category": "wallType", "price": 0, "label": "Drywall" },
-  { "value": "stoneBrickConcrete", "workizId": 1018, "category": "wallType", "price": 49, "label": "Brick / Stone / Concrete" },
-  { "value": "ceiling", "workizId": 1044, "category": "wallType", "price": 39, "label": "Ceiling" },
-  { "value": "tile", "workizId": 1043, "category": "wallType", "price": 69, "label": "Tile" },
-  { "value": "metalStuds", "workizId": 1042, "category": "wallType", "price": 30, "label": "Metal Studs" },
-  { "value": "notSure", "workizId": 1017, "category": "wallType", "price": 0, "label": "Not Sure" },
+  {
+    "value": "drywall",
+    "workizId": 1017,
+    "category": "wallType",
+    "price": 0,
+    "label": "Drywall"
+  },
+  {
+    "value": "stoneBrickConcrete",
+    "workizId": 1018,
+    "category": "wallType",
+    "price": 49,
+    "label": "Brick / Stone / Concrete"
+  },
+  {
+    "value": "ceiling",
+    "workizId": 1044,
+    "category": "wallType",
+    "price": 39,
+    "label": "Ceiling"
+  },
+  {
+    "value": "tile",
+    "workizId": 1043,
+    "category": "wallType",
+    "price": 69,
+    "label": "Tile"
+  },
+  {
+    "value": "metalStuds",
+    "workizId": 1042,
+    "category": "wallType",
+    "price": 30,
+    "label": "Metal Studs"
+  },
+  {
+    "value": "notSure",
+    "workizId": 1017,
+    "category": "wallType",
+    "price": 0,
+    "label": "Not Sure"
+  },
 
-  { "value": "yes", "workizId": 1045, "category": "fireplace", "price": 32, "label": "Above Fireplace" },
-  { "value": "no", "workizId": 1017, "category": "fireplace", "price": 0, "label": "No" },
+  {
+    "value": "yes",
+    "workizId": 1045,
+    "category": "fireplace",
+    "price": 32,
+    "label": "Above Fireplace"
+  },
+  {
+    "value": "no",
+    "workizId": 1017,
+    "category": "fireplace",
+    "price": 0,
+    "label": "No Above Fireplace"
+  },
 
-  { "value": "open", "workizId": 1017, "category": "wires", "price": 0, "label": "Exposed" },
-  { "value": "cableChannelDrywall", "workizId": 1047, "category": "wires", "price": 43, "label": "Cable Channel" },
-  { "value": "wallDrywall", "workizId": 1048, "category": "wires", "price": 93, "label": "Put it in the wall" },
-  { "value": "socketDrywall", "workizId": 1049, "category": "wires", "price": 129, "label": "In wall with socket" },
-  { "value": "wallFireplace", "workizId": 1051, "category": "wires", "price": 109, "label": "In-Wall Concealment (Fireplace)" },
-  { "value": "socketFireplace", "workizId": 1052, "category": "wires", "price": 149, "label": "In Wall with Socket (Fireplace)" },
-  { "value": "cableChannelBrick", "workizId": 1053, "category": "wires", "price": 52, "label": "Cable channel (Brick)" },
-  { "value": "wallBrick", "workizId": 1054, "category": "wires", "price": 249, "label": "In-Wall Concealment (Brick)" },
-  { "value": "socketBrick", "workizId": 1055, "category": "wires", "price": 289, "label": "In-Wall with Socket (Brick)" },
-  { "value": "yes_wires", "workizId": 1051, "category": "wires", "price": 109, "label": "Yes, hide all wires" },
-  { "value": "no_wires", "workizId": 1017, "category": "wires", "price": 0, "label": "No, standard installation" },
-  { "value": "notSure_wires", "workizId": 1017, "category": "wires", "price": 0, "label": "Not Sure" },
+  {
+    "value": "open",
+    "workizId": 1017,
+    "category": "wires",
+    "price": 0,
+    "label": "Exposed"
+  },
+  {
+    "value": "cableChannelDrywall",
+    "workizId": 1047,
+    "category": "wires",
+    "price": 43,
+    "label": "Cable Channel"
+  },
+  {
+    "value": "wallDrywall",
+    "workizId": 1048,
+    "category": "wires",
+    "price": 93,
+    "label": "Put it in the wall"
+  },
+  {
+    "value": "socketDrywall",
+    "workizId": 1049,
+    "category": "wires",
+    "price": 129,
+    "label": "In wall with socket"
+  },
+  {
+    "value": "wallFireplace",
+    "workizId": 1051,
+    "category": "wires",
+    "price": 109,
+    "label": "In-Wall Concealment (Fireplace)"
+  },
+  {
+    "value": "socketFireplace",
+    "workizId": 1052,
+    "category": "wires",
+    "price": 149,
+    "label": "In Wall with Socket (Fireplace)"
+  },
+  {
+    "value": "cableChannelBrick",
+    "workizId": 1053,
+    "category": "wires",
+    "price": 52,
+    "label": "Cable channel (Brick)"
+  },
+  {
+    "value": "wallBrick",
+    "workizId": 1054,
+    "category": "wires",
+    "price": 249,
+    "label": "In-Wall Concealment (Brick)"
+  },
+  {
+    "value": "socketBrick",
+    "workizId": 1055,
+    "category": "wires",
+    "price": 289,
+    "label": "In-Wall with Socket (Brick)"
+  },
+  {
+    "value": "yes_wires",
+    "workizId": 1051,
+    "category": "wires",
+    "price": 109,
+    "label": "Yes, hide all wires"
+  },
+  {
+    "value": "no_wires",
+    "workizId": 1017,
+    "category": "wires",
+    "price": 0,
+    "label": "No, standard installation"
+  },
+  {
+    "value": "notSure_wires",
+    "workizId": 1017,
+    "category": "wires",
+    "price": 0,
+    "label": "Not Sure"
+  },
 
-  { "value": "soundbar", "workizId": 1022, "category": "addons", "price": 69, "label": "Soundbar Installation" },
-  { "value": "gamingConsole", "workizId": 1024, "category": "addons", "price": 50, "label": "Gaming Console Setup" },
-  { "value": "ledLight", "workizId": 1026, "category": "addons", "price": 39, "label": "LED Light Strip Installation" },
-  { "value": "paintings", "workizId": 1030, "category": "addons", "price": 39, "label": "Install Painting or Mirrors" },
+  {
+    "value": "soundbar",
+    "workizId": 1022,
+    "category": "addons",
+    "price": 69,
+    "label": "Soundbar Installation"
+  },
+  {
+    "value": "gamingConsole",
+    "workizId": 1024,
+    "category": "addons",
+    "price": 50,
+    "label": "Gaming Console Setup"
+  },
+  {
+    "value": "ledLight",
+    "workizId": 1026,
+    "category": "addons",
+    "price": 39,
+    "label": "LED Light Strip Installation"
+  },
+  {
+    "value": "paintings",
+    "workizId": 1030,
+    "category": "addons",
+    "price": 39,
+    "label": "Install Painting or Mirrors"
+  },
 
-  { "value": "fireplaceYes", "workizId": 1045, "category": "fireplace", "price": 32, "label": "Above Fireplace" },
-  { "value": "upTo31", "workizId": 1003, "category": "tvSelection", "price": 69, "label": "Up to 31\"" },
-  { "value": "soundbarYes", "workizId": 1022, "category": "soundbar", "price": 69, "label": "Install Soundbar" },
-  { "value": "installLEDLight", "workizId": 1026, "category": "extraInstallation", "price": 29, "label": "Install LED Light" },
-  { "value": "installPaintingsAndDecor", "workizId": 1030, "category": "extraInstallation", "price": 35, "label": "Install paintings & decor" }
+  {
+    "value": "fireplaceYes",
+    "workizId": 1045,
+    "category": "fireplace",
+    "price": 32,
+    "label": "Above Fireplace"
+  },
+  {
+    "value": "upTo31",
+    "workizId": 1003,
+    "category": "tvSelection",
+    "price": 69,
+    "label": "Up to 31\""
+  },
+  {
+    "value": "soundbarYes",
+    "workizId": 1022,
+    "category": "soundbar",
+    "price": 69,
+    "label": "Install Soundbar"
+  },
+  {
+    "value": "installLEDLight",
+    "workizId": 1026,
+    "category": "extraInstallation",
+    "price": 29,
+    "label": "Install LED Light"
+  },
+  {
+    "value": "installPaintingsAndDecor",
+    "workizId": 1030,
+    "category": "extraInstallation",
+    "price": 35,
+    "label": "Install paintings & decor"
+  }
 ]
