@@ -19,7 +19,7 @@ module.exports = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': 'tvpro_strapi_db45c09d464bf6f9e8ac8d1965e2ddc0388d0def42c31c39',
+          'x-api-key': process.env.TVPRO_CALCULATOR_API_KEY || '',
         },
         body: JSON.stringify(body),
         keepalive: true,
