@@ -11,8 +11,8 @@ const authSecret = process.env.WORKIZ_AUTH_SECRET;
 
 const staticPriceMap = {
   // tv-size
-  under31: { price: 69, label: 'Under 31"', workizId: 1003 },
-  upTo31: { price: 69, label: 'Under 31"', workizId: 1003 },
+  under31: { price: 59, label: 'Under 31"', workizId: 1003 },
+  upTo31: { price: 59, label: 'Under 31"', workizId: 1003 },
   "32-59": { price: 125, label: '32"-59"', workizId: 1004 },
   "60-69": { price: 144, label: '60"-69"', workizId: 1005 },
   "70-85": { price: 149, label: '70"-85"', workizId: 1006 },
