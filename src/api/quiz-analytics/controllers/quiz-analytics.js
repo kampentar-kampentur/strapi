@@ -4,12 +4,59 @@
  * quiz-analytics controller
  */
 
+const ALLOWED_DATA_FIELDS = new Set([
+  'sessionId',
+  'eventType',
+  'device',
+  'url',
+  'utmSource',
+  'utmMedium',
+  'utmCampaign',
+  'utmTerm',
+  'utmContent',
+  'utmPosition',
+  'utmMatchtype',
+  'utmPlacement',
+  'utmNetwork',
+  'gadSource',
+  'gclid',
+  'gbraid',
+  'wbraid',
+  'additionalData',
+  'stepId',
+  'stepIndex',
+  'fieldName',
+  'fieldValue',
+  'errorType',
+  'lastStepIndex',
+  'errorMessage',
+]);
+
 module.exports = {
   async proxy(ctx) {
     const rawBaseUrl = process.env.TVPRO_CALCULATOR_API_URL || 'https://api.tvpro.com';
     const baseUrl = rawBaseUrl.replace(/\/+$/, '');
     const targetUrl = `${baseUrl}/api/quiz-analytics`;
     const body = ctx.request.body;
+
+    // Normalize payload: move any non-whitelisted fields from body.data into additionalData
+    if (body && typeof body === 'object' && body.data && typeof body.data === 'object') {
+      const data = body.data;
+      let additionalData = data.additionalData && typeof data.additionalData === 'object'
+        ? { ...data.additionalData }
+        : {};
+
+      for (const key of Object.keys(data)) {
+        if (!ALLOWED_DATA_FIELDS.has(key)) {
+          additionalData[key] = data[key];
+          delete data[key];
+        }
+      }
+
+      if (Object.keys(additionalData).length > 0) {
+        data.additionalData = additionalData;
+      }
+    }
 
     try {
       const controller = new AbortController();
@@ -44,3 +91,4 @@ module.exports = {
     }
   },
 };
+
