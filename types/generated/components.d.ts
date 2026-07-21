@@ -264,10 +264,12 @@ export interface BlocksWhyCustomersChooseUs extends Struct.ComponentSchema {
 export interface CtaCtaOverride extends Struct.ComponentSchema {
   collectionName: 'components_cta_cta_overrides';
   info: {
+    description: '';
     displayName: 'cta_override';
     icon: 'phone';
   };
   attributes: {
+    conversion_label: Schema.Attribute.Text;
     email: Schema.Attribute.Text;
     phone: Schema.Attribute.Text;
     phoneLabel: Schema.Attribute.Text;

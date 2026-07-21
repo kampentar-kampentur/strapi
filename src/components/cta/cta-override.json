@@ -2,7 +2,8 @@
   "collectionName": "components_cta_cta_overrides",
   "info": {
     "displayName": "cta_override",
-    "icon": "phone"
+    "icon": "phone",
+    "description": ""
   },
   "options": {},
   "attributes": {
@@ -16,6 +17,9 @@
       "type": "text"
     },
     "phoneLabel": {
+      "type": "text"
+    },
+    "conversion_label": {
       "type": "text"
     }
   }
