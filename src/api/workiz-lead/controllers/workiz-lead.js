@@ -160,7 +160,7 @@ async function sendToProsBuddy(
       services: services || [],
     };
 
-    // Add UTM & Tracking parameters if present
+    // Add UTM & Tracking parameters in 3 formats for ProsBuddy / GoHighLevel CRM parsing
     const utmFields = [
       "utm_source",
       "utm_medium",
@@ -174,11 +174,24 @@ async function sendToProsBuddy(
       "_ga",
       "_gcl_au",
     ];
+
+    const attributionObj = {};
     utmFields.forEach((field) => {
       if (utmParams[field]) {
-        dataPayload[field] = utmParams[field];
+        const val = utmParams[field];
+        // 1. Top-level standard key
+        dataPayload[field] = val;
+        // 2. Top-level lowercased key
+        dataPayload[field.toLowerCase()] = val;
+        // 3. Object for attributions array
+        attributionObj[field.toLowerCase()] = val;
       }
     });
+
+    if (Object.keys(attributionObj).length > 0) {
+      dataPayload.attributions = [attributionObj];
+      dataPayload.attribution = attributionObj;
+    }
 
     const prosbuddyData = {
       account_key: "tvproHandyServices",
