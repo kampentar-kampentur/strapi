@@ -160,13 +160,19 @@ async function sendToProsBuddy(
       services: services || [],
     };
 
-    // Add UTM parameters if present
+    // Add UTM & Tracking parameters if present
     const utmFields = [
       "utm_source",
       "utm_medium",
       "utm_campaign",
       "utm_content",
       "utm_term",
+      "gclid",
+      "gbraid",
+      "wbraid",
+      "fbclid",
+      "_ga",
+      "_gcl_au",
     ];
     utmFields.forEach((field) => {
       if (utmParams[field]) {
@@ -239,6 +245,12 @@ module.exports = {
         utm_campaign,
         utm_content,
         utm_term,
+        gclid,
+        gbraid,
+        wbraid,
+        fbclid,
+        _ga,
+        _gcl_au,
         source,
         city,
         submittedAt,
@@ -253,6 +265,12 @@ module.exports = {
         utm_campaign,
         utm_content,
         utm_term,
+        gclid,
+        gbraid,
+        wbraid,
+        fbclid,
+        _ga,
+        _gcl_au,
       };
 
       const nameParts = name.trim().split(/\s+/);
@@ -295,6 +313,12 @@ module.exports = {
 
       const formattedTime = formatHoustonTime(submittedAt);
 
+      const clickIdsInfo = [
+        gclid ? `🎯 <b>GCLID:</b> ${gclid}` : null,
+        gbraid ? `🎯 <b>GBRAID:</b> ${gbraid}` : null,
+        wbraid ? `🎯 <b>WBRAID:</b> ${wbraid}` : null,
+      ].filter(Boolean).join("\n");
+
       sendMessage(
         `📢 <b>New Lead Received!</b>\n\n` +
           `👤 <b>Name:</b> ${name}\n` +
@@ -304,6 +328,7 @@ module.exports = {
           `📍 <b>ZIP:</b> ${zip}\n` +
           `🔗 <b>Source:</b> TVProWebsite - ${source}\n` +
           `🏙️ <b>City:</b> ${city}\n` +
+          (clickIdsInfo ? `${clickIdsInfo}\n` : "") +
           `📅 <b>Submitted At (Houston):</b> ${formattedTime}`,
         { parse_mode: "HTML" },
       );
@@ -347,6 +372,12 @@ module.exports = {
         utm_campaign,
         utm_content,
         utm_term,
+        gclid,
+        gbraid,
+        wbraid,
+        fbclid,
+        _ga,
+        _gcl_au,
         submittedAt,
         ...rest
       } = data;
@@ -356,6 +387,12 @@ module.exports = {
         utm_campaign,
         utm_content,
         utm_term,
+        gclid,
+        gbraid,
+        wbraid,
+        fbclid,
+        _ga,
+        _gcl_au,
       };
       let { phone, name, email, address, zip, apt } = contactInfo;
       if (contactInfo.zipApt) {
