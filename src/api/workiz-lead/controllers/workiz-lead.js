@@ -20,7 +20,7 @@ const staticPriceMap = {
   notSure_tvSelection: { price: 125, label: "TV Size: Not Sure", workizId: 1004 },
 
   // mounting
-  alreadyThere: { price: 0, label: "Mount Type: Already there", workizId: 1013 },
+  alreadyThere: { price: 0, label: "Mount Type: I have a mount", workizId: 1013 },
   fixed: { price: 44, label: "Mount Type: Fixed Mount", workizId: 1014 },
   tilting: { price: 52, label: "Mount Type: Tilt Mount", workizId: 1016 },
   fullMotion: { price: 69, label: "Mount Type: Full-Motion Mount", workizId: 1012 },
