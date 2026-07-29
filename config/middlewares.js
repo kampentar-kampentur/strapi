@@ -1,28 +1,4 @@
 module.exports = [
-  {
-    name: 'strapi::cors',
-    config: {
-      origin: ['http://localhost:3000'],
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      headers: '*',
-    },
-  },
-  {
-    name: 'strapi::cors',
-    config: {
-      origin: ['https://tvpro-landing.vercel.app/'],
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      headers: '*',
-    },
-  },
-  {
-    name: 'strapi::cors',
-    config: {
-      origin: ['https://tvpro-landing-z29e.vercel.app/'],
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      headers: '*',
-    },
-  },
   'strapi::logger',
   'strapi::errors',
   {
@@ -50,7 +26,21 @@ module.exports = [
       },
     },
   },
-  'strapi::cors',
+  {
+    name: 'strapi::cors',
+    config: {
+      origin: [
+        'http://localhost:3000',
+        'https://tvprousa.com',
+        'https://www.tvprousa.com',
+        'https://tvpro-landing.vercel.app',
+        'https://tvpro-landing-z29e.vercel.app'
+      ],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      headers: '*',
+      keepHeaderOnError: true,
+    },
+  },
   'strapi::poweredBy',
   'strapi::query',
   'strapi::body',
