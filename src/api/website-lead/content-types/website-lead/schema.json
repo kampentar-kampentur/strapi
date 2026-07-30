@@ -1,0 +1,85 @@
+{
+  "kind": "collectionType",
+  "collectionName": "website_leads",
+  "info": {
+    "singularName": "website-lead",
+    "pluralName": "website-leads",
+    "displayName": "Website Lead",
+    "description": "Stores all incoming website form submissions with full tracking parameters (gclid, gbraid, wbraid, etc.)"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "address": {
+      "type": "string"
+    },
+    "zip": {
+      "type": "string"
+    },
+    "apt": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "formType": {
+      "type": "string"
+    },
+    "details": {
+      "type": "json"
+    },
+    "gclid": {
+      "type": "string"
+    },
+    "gbraid": {
+      "type": "string"
+    },
+    "wbraid": {
+      "type": "string"
+    },
+    "fbclid": {
+      "type": "string"
+    },
+    "msclkid": {
+      "type": "string"
+    },
+    "_ga": {
+      "type": "string"
+    },
+    "_gcl_au": {
+      "type": "string"
+    },
+    "utm_source": {
+      "type": "string"
+    },
+    "utm_medium": {
+      "type": "string"
+    },
+    "utm_campaign": {
+      "type": "string"
+    },
+    "utm_content": {
+      "type": "string"
+    },
+    "utm_term": {
+      "type": "string"
+    },
+    "submittedAt": {
+      "type": "datetime"
+    }
+  }
+}

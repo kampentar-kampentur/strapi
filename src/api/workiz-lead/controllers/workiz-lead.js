@@ -160,38 +160,19 @@ async function sendToProsBuddy(
       services: services || [],
     };
 
-    // Add UTM & Tracking parameters in 3 formats for ProsBuddy / GoHighLevel CRM parsing
+    // Add UTM parameters if present
     const utmFields = [
       "utm_source",
       "utm_medium",
       "utm_campaign",
       "utm_content",
       "utm_term",
-      "gclid",
-      "gbraid",
-      "wbraid",
-      "fbclid",
-      "_ga",
-      "_gcl_au",
     ];
-
-    const attributionObj = {};
     utmFields.forEach((field) => {
       if (utmParams[field]) {
-        const val = utmParams[field];
-        // 1. Top-level standard key
-        dataPayload[field] = val;
-        // 2. Top-level lowercased key
-        dataPayload[field.toLowerCase()] = val;
-        // 3. Object for attributions array
-        attributionObj[field.toLowerCase()] = val;
+        dataPayload[field] = utmParams[field];
       }
     });
-
-    if (Object.keys(attributionObj).length > 0) {
-      dataPayload.attributions = [attributionObj];
-      dataPayload.attribution = attributionObj;
-    }
 
     const prosbuddyData = {
       account_key: "tvproHandyServices",
@@ -301,6 +282,39 @@ module.exports = {
       if (email) leadData.Email = email;
       if (address) leadData.Address = address;
       if (zip) leadData.PostalCode = zip;
+
+      // Save lead into Strapi Database (Website Leads Collection)
+      try {
+        await strapi.entityService.create("api::website-lead.website-lead", {
+          data: {
+            name,
+            phone,
+            email: email || "",
+            address: address || "",
+            zip: zip || "",
+            city: city || "",
+            source: source || "book-now-modal",
+            formType: "bookNow",
+            gclid,
+            gbraid,
+            wbraid,
+            fbclid,
+            _ga,
+            _gcl_au,
+            utm_source,
+            utm_medium,
+            utm_campaign,
+            utm_content,
+            utm_term,
+            submittedAt: submittedAt ? new Date(submittedAt) : new Date(),
+          },
+        });
+        strapi.log.info(
+          `[Strapi] Lead saved to website_leads table (${name}, ${phone})`,
+        );
+      } catch (dbError) {
+        strapi.log.error("Error saving lead to Strapi DB:", dbError);
+      }
 
       // Send data to ProsBuddy API
       try {
@@ -415,6 +429,41 @@ module.exports = {
       const nameParts = name.trim().split(/\s+/);
       const firstName = nameParts[0] || "";
       const lastName = nameParts.slice(1).join(" ") || " ";
+
+      // Save BestQuote lead into Strapi Database
+      try {
+        await strapi.entityService.create("api::website-lead.website-lead", {
+          data: {
+            name,
+            phone,
+            email: email || "",
+            address: address || "",
+            zip: zip || "",
+            apt: apt || "",
+            city: data.city || "",
+            source: data.source || "best-quote-modal",
+            formType: "bestQuote",
+            details: rest || {},
+            gclid,
+            gbraid,
+            wbraid,
+            fbclid,
+            _ga,
+            _gcl_au,
+            utm_source,
+            utm_medium,
+            utm_campaign,
+            utm_content,
+            utm_term,
+            submittedAt: submittedAt ? new Date(submittedAt) : new Date(),
+          },
+        });
+        strapi.log.info(
+          `[Strapi] BestQuote lead saved to website_leads table (${name}, ${phone})`,
+        );
+      } catch (dbError) {
+        strapi.log.error("Error saving BestQuote lead to Strapi DB:", dbError);
+      }
       const leadData = {
         auth_secret: authSecret,
         Phone: phone.replace(/\D/g, ""),
