@@ -222,24 +222,31 @@ async function sendToProsBuddy(
 
 async function createWebsiteLeadInDb(leadData) {
   try {
+    const cleanData = {};
+    for (const [key, value] of Object.entries(leadData)) {
+      if (value !== "" && value !== undefined && value !== null) {
+        cleanData[key] = value;
+      }
+    }
+
     if (strapi.documents) {
       await strapi.documents("api::website-lead.website-lead").create({
-        data: leadData,
+        data: cleanData,
       });
     } else if (strapi.entityService) {
       await strapi.entityService.create("api::website-lead.website-lead", {
-        data: leadData,
+        data: cleanData,
       });
     } else {
       await strapi.db.query("api::website-lead.website-lead").create({
-        data: leadData,
+        data: cleanData,
       });
     }
     strapi.log.info(
-      `[Strapi DB] Lead successfully saved to website_leads table (${leadData.name}, ${leadData.phone})`
+      `[Strapi DB] Lead successfully saved to website_leads table (${cleanData.name}, ${cleanData.phone})`
     );
   } catch (err) {
-    strapi.log.error("[Strapi DB] Failed to save website lead:", err);
+    strapi.log.error("[Strapi DB] Failed to save website lead:", err.message || err);
   }
 }
 
