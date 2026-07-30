@@ -220,6 +220,29 @@ async function sendToProsBuddy(
   }
 }
 
+async function createWebsiteLeadInDb(leadData) {
+  try {
+    if (strapi.documents) {
+      await strapi.documents("api::website-lead.website-lead").create({
+        data: leadData,
+      });
+    } else if (strapi.entityService) {
+      await strapi.entityService.create("api::website-lead.website-lead", {
+        data: leadData,
+      });
+    } else {
+      await strapi.db.query("api::website-lead.website-lead").create({
+        data: leadData,
+      });
+    }
+    strapi.log.info(
+      `[Strapi DB] Lead successfully saved to website_leads table (${leadData.name}, ${leadData.phone})`
+    );
+  } catch (err) {
+    strapi.log.error("[Strapi DB] Failed to save website lead:", err);
+  }
+}
+
 module.exports = {
   async bookNow(ctx) {
     try {
@@ -284,37 +307,28 @@ module.exports = {
       if (zip) leadData.PostalCode = zip;
 
       // Save lead into Strapi Database (Website Leads Collection)
-      try {
-        await strapi.entityService.create("api::website-lead.website-lead", {
-          data: {
-            name,
-            phone,
-            email: email || "",
-            address: address || "",
-            zip: zip || "",
-            city: city || "",
-            source: source || "book-now-modal",
-            formType: "bookNow",
-            gclid,
-            gbraid,
-            wbraid,
-            fbclid,
-            _ga,
-            _gcl_au,
-            utm_source,
-            utm_medium,
-            utm_campaign,
-            utm_content,
-            utm_term,
-            submittedAt: submittedAt ? new Date(submittedAt) : new Date(),
-          },
-        });
-        strapi.log.info(
-          `[Strapi] Lead saved to website_leads table (${name}, ${phone})`,
-        );
-      } catch (dbError) {
-        strapi.log.error("Error saving lead to Strapi DB:", dbError);
-      }
+      await createWebsiteLeadInDb({
+        name,
+        phone,
+        email: email || "",
+        address: address || "",
+        zip: zip || "",
+        city: city || "",
+        source: source || "book-now-modal",
+        formType: "bookNow",
+        gclid,
+        gbraid,
+        wbraid,
+        fbclid,
+        _ga,
+        _gcl_au,
+        utm_source,
+        utm_medium,
+        utm_campaign,
+        utm_content,
+        utm_term,
+        submittedAt: submittedAt ? new Date(submittedAt) : new Date(),
+      });
 
       // Send data to ProsBuddy API
       try {
@@ -425,39 +439,30 @@ module.exports = {
       const lastName = nameParts.slice(1).join(" ") || " ";
 
       // Save BestQuote lead into Strapi Database
-      try {
-        await strapi.entityService.create("api::website-lead.website-lead", {
-          data: {
-            name,
-            phone,
-            email: email || "",
-            address: address || "",
-            zip: zip || "",
-            apt: apt || "",
-            city: data.city || "",
-            source: data.source || "best-quote-modal",
-            formType: "bestQuote",
-            details: rest || {},
-            gclid,
-            gbraid,
-            wbraid,
-            fbclid,
-            _ga,
-            _gcl_au,
-            utm_source,
-            utm_medium,
-            utm_campaign,
-            utm_content,
-            utm_term,
-            submittedAt: submittedAt ? new Date(submittedAt) : new Date(),
-          },
-        });
-        strapi.log.info(
-          `[Strapi] BestQuote lead saved to website_leads table (${name}, ${phone})`,
-        );
-      } catch (dbError) {
-        strapi.log.error("Error saving BestQuote lead to Strapi DB:", dbError);
-      }
+      await createWebsiteLeadInDb({
+        name,
+        phone,
+        email: email || "",
+        address: address || "",
+        zip: zip || "",
+        apt: apt || "",
+        city: data.city || "",
+        source: data.source || "best-quote-modal",
+        formType: "bestQuote",
+        details: rest || {},
+        gclid,
+        gbraid,
+        wbraid,
+        fbclid,
+        _ga,
+        _gcl_au,
+        utm_source,
+        utm_medium,
+        utm_campaign,
+        utm_content,
+        utm_term,
+        submittedAt: submittedAt ? new Date(submittedAt) : new Date(),
+      });
       const leadData = {
         auth_secret: authSecret,
         Phone: phone.replace(/\D/g, ""),

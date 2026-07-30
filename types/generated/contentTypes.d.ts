@@ -1224,6 +1224,57 @@ export interface ApiUtpBarUtpBar extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiWebsiteLeadWebsiteLead extends Struct.CollectionTypeSchema {
+  collectionName: 'website_leads';
+  info: {
+    description: 'Stores all incoming website form submissions with full tracking parameters (gclid, gbraid, wbraid, etc.)';
+    displayName: 'Website Lead';
+    pluralName: 'website-leads';
+    singularName: 'website-lead';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    _ga: Schema.Attribute.String;
+    _gcl_au: Schema.Attribute.String;
+    address: Schema.Attribute.String;
+    apt: Schema.Attribute.String;
+    city: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    details: Schema.Attribute.JSON;
+    email: Schema.Attribute.Email;
+    fbclid: Schema.Attribute.String;
+    formType: Schema.Attribute.String;
+    gbraid: Schema.Attribute.String;
+    gclid: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::website-lead.website-lead'
+    > &
+      Schema.Attribute.Private;
+    msclkid: Schema.Attribute.String;
+    name: Schema.Attribute.String;
+    phone: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    source: Schema.Attribute.String;
+    submittedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    utm_campaign: Schema.Attribute.String;
+    utm_content: Schema.Attribute.String;
+    utm_medium: Schema.Attribute.String;
+    utm_source: Schema.Attribute.String;
+    utm_term: Schema.Attribute.String;
+    wbraid: Schema.Attribute.String;
+    zip: Schema.Attribute.String;
+  };
+}
+
 export interface ApiWhyCustomersChooseUsWhyCustomersChooseUs
   extends Struct.SingleTypeSchema {
   collectionName: 'why_customers_choose_uses';
@@ -1789,6 +1840,7 @@ declare module '@strapi/strapi' {
       'api::tv-mounting-type.tv-mounting-type': ApiTvMountingTypeTvMountingType;
       'api::tv-size.tv-size': ApiTvSizeTvSize;
       'api::utp-bar.utp-bar': ApiUtpBarUtpBar;
+      'api::website-lead.website-lead': ApiWebsiteLeadWebsiteLead;
       'api::why-customers-choose-us.why-customers-choose-us': ApiWhyCustomersChooseUsWhyCustomersChooseUs;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
