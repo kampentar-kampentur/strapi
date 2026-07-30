@@ -354,9 +354,10 @@ module.exports = {
 
       const formattedTime = formatHoustonTime(submittedAt);
 
+      const campaignLine = utm_campaign ? `📣 <b>Campaign:</b> ${utm_campaign}\n` : "";
+
       sendMessage(
         `📢 <b>New Lead Received!</b>\n\n` +
-          `🏢 <b>Company:</b> TVPro Handy Services\n` +
           `👤 <b>Name:</b> ${name}\n` +
           `📞 <b>Phone:</b> ${phone}\n` +
           `📧 <b>Email:</b> ${email}\n` +
@@ -364,6 +365,7 @@ module.exports = {
           `📍 <b>ZIP:</b> ${zip}\n` +
           `🔗 <b>Source:</b> TVProWebsite - ${source}\n` +
           `🏙️ <b>City:</b> ${city}\n` +
+          campaignLine +
           `📅 <b>Submitted At (Houston):</b> ${formattedTime}`,
         { parse_mode: "HTML" },
       );
@@ -728,15 +730,17 @@ module.exports = {
 
       const formattedTime = formatHoustonTime(submittedAt);
 
+      const campaignLine = utm_campaign ? `📣 *Campaign:* ${utm_campaign}\n` : "";
+
       sendMessage(
         `📢 *New Estimate Received!*\n\n` +
-          `🏢 *Company:* TVPro Handy Services\n` +
           `👤 *Name:* ${name}\n` +
           `📞 *Phone:* ${phone}\n` +
           `📧 *Email:* ${email}\n` +
           `🏠 *Address:* ${address}\n` +
           `📍 *ZIP:* ${zip}\n` +
           `🔗 *Source:* TVProWebsite\n` +
+          campaignLine +
           `📅 *Submitted At (Houston):* ${formattedTime}` +
           itemsListText,
         { parse_mode: "Markdown" },
