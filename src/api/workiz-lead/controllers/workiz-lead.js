@@ -363,19 +363,23 @@ module.exports = {
 
       const campaignLine = utm_campaign ? `📣 <b>Campaign:</b> ${utm_campaign}\n` : "";
 
-      sendMessage(
-        `📢 <b>New Lead Received!</b>\n\n` +
-          `👤 <b>Name:</b> ${name}\n` +
-          `📞 <b>Phone:</b> ${phone}\n` +
-          `📧 <b>Email:</b> ${email}\n` +
-          `🏠 <b>Address:</b> ${address}\n` +
-          `📍 <b>ZIP:</b> ${zip}\n` +
-          `🔗 <b>Source:</b> TVProWebsite - ${source}\n` +
-          `🏙️ <b>City:</b> ${city}\n` +
-          campaignLine +
-          `📅 <b>Submitted At (Houston):</b> ${formattedTime}`,
-        { parse_mode: "HTML" },
-      );
+      try {
+        await sendMessage(
+          `📢 <b>New Lead Received!</b>\n\n` +
+            `👤 <b>Name:</b> ${name}\n` +
+            `📞 <b>Phone:</b> ${phone}\n` +
+            `📧 <b>Email:</b> ${email}\n` +
+            `🏠 <b>Address:</b> ${address}\n` +
+            `📍 <b>ZIP:</b> ${zip}\n` +
+            `🔗 <b>Source:</b> TVProWebsite - ${source}\n` +
+            `🏙️ <b>City:</b> ${city}\n` +
+            campaignLine +
+            `📅 <b>Submitted At (Houston):</b> ${formattedTime}`,
+          { parse_mode: "HTML" },
+        );
+      } catch (tgError) {
+        strapi.log.error("Failed to send Telegram notification in bookNow:", tgError.message || tgError);
+      }
 
       ctx.send({
         ok: true,
@@ -727,31 +731,35 @@ module.exports = {
       // Format items list for Telegram
       let itemsListText = "";
       if (itemsWithPrices.length > 0) {
-        itemsListText = "\n\n🛒 *Selected Items:*\n";
+        itemsListText = "\n\n🛒 <b>Selected Items:</b>\n";
         itemsWithPrices.forEach((item) => {
           const countText = item.count > 1 ? ` x${item.count}` : "";
           itemsListText += `• ${item.name}${countText} — $${item.total.toFixed(2)}\n`;
         });
-        itemsListText += `\n💰 *Total Price:* $${totalPrice.toFixed(2)}`;
+        itemsListText += `\n💰 <b>Total Price:</b> $${totalPrice.toFixed(2)}`;
       }
 
       const formattedTime = formatHoustonTime(submittedAt);
 
-      const campaignLine = utm_campaign ? `📣 *Campaign:* ${utm_campaign}\n` : "";
+      const campaignLine = utm_campaign ? `📣 <b>Campaign:</b> ${utm_campaign}\n` : "";
 
-      sendMessage(
-        `📢 *New Estimate Received!*\n\n` +
-          `👤 *Name:* ${name}\n` +
-          `📞 *Phone:* ${phone}\n` +
-          `📧 *Email:* ${email}\n` +
-          `🏠 *Address:* ${address}\n` +
-          `📍 *ZIP:* ${zip}\n` +
-          `🔗 *Source:* TVProWebsite\n` +
-          campaignLine +
-          `📅 *Submitted At (Houston):* ${formattedTime}` +
-          itemsListText,
-        { parse_mode: "Markdown" },
-      );
+      try {
+        await sendMessage(
+          `📢 <b>New Estimate Received!</b>\n\n` +
+            `👤 <b>Name:</b> ${name}\n` +
+            `📞 <b>Phone:</b> ${phone}\n` +
+            `📧 <b>Email:</b> ${email}\n` +
+            `🏠 <b>Address:</b> ${address}\n` +
+            `📍 <b>ZIP:</b> ${zip}\n` +
+            `🔗 <b>Source:</b> TVProWebsite\n` +
+            campaignLine +
+            `📅 <b>Submitted At (Houston):</b> ${formattedTime}` +
+            itemsListText,
+          { parse_mode: "HTML" },
+        );
+      } catch (tgError) {
+        strapi.log.error("Failed to send Telegram notification in bestQuote:", tgError.message || tgError);
+      }
 
       ctx.send({
         ok: true,
