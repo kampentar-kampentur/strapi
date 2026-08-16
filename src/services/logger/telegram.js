@@ -26,6 +26,26 @@ function cleanContext(ctx) {
 }
 
 /**
+ * Check if the error is a client-side HTTP 4xx error (e.g. Malicious Path, 404, 400)
+ */
+function isClientHttpError(context, message) {
+  if (context && typeof context === 'object') {
+    const status = context.status || context.statusCode || (context.error && (context.error.status || context.error.statusCode));
+    if (typeof status === 'number' && status >= 400 && status < 500) {
+      return true;
+    }
+    const errorName = context.name || (context.error && context.error.name) || '';
+    if (/^(BadRequestError|NotFoundError|UnauthorizedError|ForbiddenError|ValidationError)$/i.test(errorName)) {
+      return true;
+    }
+  }
+  if (typeof message === 'string' && /^(Malicious Path|Not Found|Unauthorized|Forbidden)$/i.test(message.trim())) {
+    return true;
+  }
+  return false;
+}
+
+/**
  * Send an alert message to Telegram
  */
 async function sendTelegramAlert({
@@ -36,9 +56,15 @@ async function sendTelegramAlert({
   isFrontend = false,
   isCritical = false,
 }) {
-  const token = process.env.TELEGRAM_TOKEN || process.env.TG_TOKEN;
-  const chatId = process.env.TELEGRAM_TO || process.env.TG_CHAT_ID;
+  // STRICT: Dedicated env vars for logger only (do NOT fallback to TG_TOKEN / TG_CHAT_ID used for lead forms)
+  const token = process.env.TELEGRAM_TOKEN || process.env.TELEGRAM_LOGGER_TOKEN || process.env.TELEGRAM_ALERTS_TOKEN;
+  const chatId = process.env.TELEGRAM_TO || process.env.TELEGRAM_LOGGER_CHAT_ID || process.env.TELEGRAM_ALERTS_CHAT_ID;
   if (!token || !chatId || process.env.DISABLE_TELEGRAM_NOTIFICATIONS === 'true') {
+    return false;
+  }
+
+  // Filter out client 4xx errors (e.g. Malicious Path scanning from bots) from spamming Telegram
+  if (!isCritical && !isFrontend && isClientHttpError(context, message)) {
     return false;
   }
 
