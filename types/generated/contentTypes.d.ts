@@ -1026,7 +1026,7 @@ export interface ApiTechnicianApplicationTechnicianApplication
     gclid: Schema.Attribute.String;
     hasTools: Schema.Attribute.Enumeration<['Yes', 'No', 'Some tools']>;
     insurance: Schema.Attribute.String;
-    languages: Schema.Attribute.String;
+    languages: Schema.Attribute.Text;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1043,7 +1043,7 @@ export interface ApiTechnicianApplicationTechnicianApplication
     q1Studs: Schema.Attribute.String;
     q2Power: Schema.Attribute.String;
     schedule: Schema.Attribute.String;
-    servicesPerformed: Schema.Attribute.String;
+    servicesPerformed: Schema.Attribute.Text;
     strengths: Schema.Attribute.Text;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

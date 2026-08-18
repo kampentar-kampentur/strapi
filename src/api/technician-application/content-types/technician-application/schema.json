@@ -52,7 +52,7 @@
       "required": true
     },
     "languages": {
-      "type": "string"
+      "type": "text"
     },
     "experienceLevel": {
       "type": "string"
@@ -61,7 +61,7 @@
       "type": "text"
     },
     "servicesPerformed": {
-      "type": "string"
+      "type": "text"
     },
     "hasTools": {
       "type": "enumeration",
