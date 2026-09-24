@@ -276,6 +276,7 @@ module.exports = {
         _ga,
         _gcl_au,
         source,
+        tvCount,
         city,
         submittedAt,
       } = ctx.request.body.data;
@@ -361,6 +362,7 @@ module.exports = {
 
       const formattedTime = formatHoustonTime(submittedAt);
 
+      const tvCountLine = tvCount ? `📺 <b>Selected TVs:</b> ${tvCount}\n` : "";
       const campaignLine = utm_campaign ? `📣 <b>Campaign:</b> ${utm_campaign}\n` : "";
 
       try {
@@ -368,11 +370,12 @@ module.exports = {
           `📢 <b>New Lead Received!</b>\n\n` +
             `👤 <b>Name:</b> ${name}\n` +
             `📞 <b>Phone:</b> ${phone}\n` +
-            `📧 <b>Email:</b> ${email}\n` +
-            `🏠 <b>Address:</b> ${address}\n` +
-            `📍 <b>ZIP:</b> ${zip}\n` +
-            `🔗 <b>Source:</b> TVProWebsite - ${source}\n` +
-            `🏙️ <b>City:</b> ${city}\n` +
+            (email ? `📧 <b>Email:</b> ${email}\n` : "") +
+            (address ? `🏠 <b>Address:</b> ${address}\n` : "") +
+            (zip ? `📍 <b>ZIP:</b> ${zip}\n` : "") +
+            tvCountLine +
+            `🔗 <b>Source:</b> TVProWebsite - ${source || "book-now-modal"}\n` +
+            `🏙️ <b>City:</b> ${city || "Houston"}\n` +
             campaignLine +
             `📅 <b>Submitted At (Houston):</b> ${formattedTime}`,
           { parse_mode: "HTML" },
