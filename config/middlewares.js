@@ -31,12 +31,18 @@ module.exports = [
     config: {
       origin: [
         'http://localhost:3000',
+        'http://localhost:3001',
+        'http://localhost:4321',
         'https://tvprousa.com',
         'https://www.tvprousa.com',
+        'https://tvpro-landing.pages.dev',
+        'https://dev.tvpro-landing.pages.dev',
         'https://tvpro-landing.vercel.app',
-        'https://tvpro-landing-z29e.vercel.app'
+        'https://tvpro-landing-z29e.vercel.app',
+        /https:\/\/.*\.pages\.dev$/,
+        /https:\/\/.*\.vercel\.app$/
       ],
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD', 'PATCH'],
       headers: '*',
       keepHeaderOnError: true,
     },
