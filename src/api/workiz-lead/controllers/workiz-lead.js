@@ -279,6 +279,7 @@ module.exports = {
         tvCount,
         city,
         submittedAt,
+        ...restExtraParams
       } = ctx.request.body.data;
       if (!phone || !name) {
         return ctx.badRequest('Missing "phone" or "name" in request body');
@@ -296,6 +297,7 @@ module.exports = {
         fbclid,
         _ga,
         _gcl_au,
+        ...restExtraParams,
       };
 
       const nameParts = name.trim().split(/\s+/);
@@ -324,6 +326,7 @@ module.exports = {
         city: city || "",
         source: source || "book-now-modal",
         formType: "bookNow",
+        details: { tvCount: tvCount || null, ...restExtraParams },
         gclid,
         gbraid,
         wbraid,
