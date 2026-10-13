@@ -183,12 +183,13 @@ async function sendToProsBuddy(
     const response = await axios.post(
       "https://dev.app.prosbuddy.ai/api/v1/webhook/ghl/create-lead",
       prosbuddyData,
+      { timeout: 10000 },
     );
 
-    // Save response to file for testing
+    // Save response to file for testing (stored in /logs outside src/ to avoid Strapi dev auto-reload)
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const filename = `prosbuddy_response_${endpoint}_${timestamp}.json`;
-    const filepath = path.join(__dirname, "../../../prosbuddy_logs", filename);
+    const filepath = path.join(process.cwd(), "logs/prosbuddy", filename);
 
     try {
       await fs.mkdir(path.dirname(filepath), { recursive: true });
@@ -276,7 +277,9 @@ module.exports = {
         _ga,
         _gcl_au,
         source,
+        formType,
         tvCount,
+        timing,
         city,
         submittedAt,
         ...restExtraParams
@@ -315,6 +318,7 @@ module.exports = {
       if (email) leadData.Email = email;
       if (address) leadData.Address = address;
       if (zip) leadData.PostalCode = zip;
+      if (city) leadData.City = city;
 
       // Save lead into Strapi Database (Website Leads Collection)
       await createWebsiteLeadInDb({
@@ -325,8 +329,8 @@ module.exports = {
         zip: zip || "",
         city: city || "",
         source: source || "book-now-modal",
-        formType: "bookNow",
-        details: { tvCount: tvCount || null, ...restExtraParams },
+        formType: formType || "bookNow",
+        details: { tvCount: tvCount || null, timing: timing || null, ...restExtraParams },
         gclid,
         gbraid,
         wbraid,
@@ -352,7 +356,7 @@ module.exports = {
           zip,
           "",
           [],
-          "bookNow",
+          formType || "bookNow",
           utmParams,
         );
       } catch (prosbuddyError) {
@@ -366,6 +370,7 @@ module.exports = {
       const formattedTime = formatHoustonTime(submittedAt);
 
       const tvCountLine = tvCount ? `📺 <b>Selected TVs:</b> ${tvCount}\n` : "";
+      const timingLine = timing ? `⏱️ <b>Timing:</b> ${timing}\n` : "";
       const campaignLine = utm_campaign ? `📣 <b>Campaign:</b> ${utm_campaign}\n` : "";
 
       try {
@@ -377,6 +382,7 @@ module.exports = {
             (address ? `🏠 <b>Address:</b> ${address}\n` : "") +
             (zip ? `📍 <b>ZIP:</b> ${zip}\n` : "") +
             tvCountLine +
+            timingLine +
             `🔗 <b>Source:</b> TVProWebsite - ${source || "book-now-modal"}\n` +
             `🏙️ <b>City:</b> ${city || "Houston"}\n` +
             campaignLine +
