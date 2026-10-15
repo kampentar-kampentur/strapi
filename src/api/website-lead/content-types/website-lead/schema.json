@@ -33,6 +33,15 @@
     "city": {
       "type": "string"
     },
+    "state": {
+      "type": "string"
+    },
+    "area": {
+      "type": "string"
+    },
+    "page": {
+      "type": "string"
+    },
     "source": {
       "type": "string"
     },

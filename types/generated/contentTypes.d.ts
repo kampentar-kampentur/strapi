@@ -1240,6 +1240,7 @@ export interface ApiWebsiteLeadWebsiteLead extends Struct.CollectionTypeSchema {
     _gcl_au: Schema.Attribute.String;
     address: Schema.Attribute.String;
     apt: Schema.Attribute.String;
+    area: Schema.Attribute.String;
     city: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1258,9 +1259,11 @@ export interface ApiWebsiteLeadWebsiteLead extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     msclkid: Schema.Attribute.String;
     name: Schema.Attribute.String;
+    page: Schema.Attribute.String;
     phone: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     source: Schema.Attribute.String;
+    state: Schema.Attribute.String;
     submittedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

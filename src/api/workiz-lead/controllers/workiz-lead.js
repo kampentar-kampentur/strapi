@@ -5,6 +5,7 @@ const Table = require("cli-table3");
 const fs = require("fs").promises;
 const path = require("path");
 const { sendMessage } = require("../../../services/telegram-bot");
+const { resolveLeadLocation } = require("../../../services/geo-resolver");
 
 const apiToken = process.env.WORKIZ_API_TOKEN;
 const authSecret = process.env.WORKIZ_AUTH_SECRET;
@@ -281,12 +282,34 @@ module.exports = {
         tvCount,
         timing,
         city,
+        state,
+        page,
+        lat,
+        lng,
         submittedAt,
         ...restExtraParams
       } = ctx.request.body.data;
       if (!phone || !name) {
         return ctx.badRequest('Missing "phone" or "name" in request body');
       }
+
+      let dynamicPage = page;
+      if (!dynamicPage && ctx.request.headers?.referer) {
+        try {
+          const refUrl = new URL(ctx.request.headers.referer);
+          dynamicPage = refUrl.pathname;
+        } catch (e) {}
+      }
+
+      const location = resolveLeadLocation({
+        city,
+        state,
+        page: dynamicPage,
+        lat,
+        lng,
+        phone,
+        source: source || "book-now-modal",
+      });
 
       const utmParams = {
         utm_source,
@@ -318,7 +341,15 @@ module.exports = {
       if (email) leadData.Email = email;
       if (address) leadData.Address = address;
       if (zip) leadData.PostalCode = zip;
-      if (city) leadData.City = city;
+      if (location.cityName) leadData.City = location.cityName;
+      if (location.stateCode) leadData.State = location.stateCode;
+
+      const trueSource =
+        utm_source ||
+        (fbclid ? "facebook" : null) ||
+        (gclid || gbraid || wbraid ? "google" : null) ||
+        (source && !source.includes("page") && !source.includes("modal") && !source.includes("popup") ? source : null) ||
+        "direct";
 
       // Save lead into Strapi Database (Website Leads Collection)
       await createWebsiteLeadInDb({
@@ -327,8 +358,11 @@ module.exports = {
         email: email || "",
         address: address || "",
         zip: zip || "",
-        city: city || "",
-        source: source || "book-now-modal",
+        city: location.cityName,
+        state: location.stateCode,
+        area: location.metroArea,
+        page: location.page,
+        source: trueSource,
         formType: formType || "bookNow",
         details: { tvCount: tvCount || null, timing: timing || null, ...restExtraParams },
         gclid,
@@ -383,8 +417,10 @@ module.exports = {
             (zip ? `📍 <b>ZIP:</b> ${zip}\n` : "") +
             tvCountLine +
             timingLine +
-            `🔗 <b>Source:</b> TVProWebsite - ${source || "book-now-modal"}\n` +
-            `🏙️ <b>City:</b> ${city || "Houston"}\n` +
+            `🔗 <b>Source:</b> ${trueSource}\n` +
+            `📄 <b>Page:</b> ${location.page}\n` +
+            `🏙️ <b>City:</b> ${location.cityWithState}\n` +
+            `🗺️ <b>Area:</b> ${location.metroArea}\n` +
             campaignLine +
             `📅 <b>Submitted At (Houston):</b> ${formattedTime}`,
           { parse_mode: "HTML" },
@@ -439,6 +475,11 @@ module.exports = {
         _ga,
         _gcl_au,
         submittedAt,
+        page,
+        city: directCity,
+        state: directState,
+        lat,
+        lng,
         ...rest
       } = data;
       const utmParams = {
@@ -454,14 +495,40 @@ module.exports = {
         _ga,
         _gcl_au,
       };
-      let { phone, name, email, address, zip, apt } = contactInfo;
+      let { phone, name, email, address, zip, apt, city: contactCity, state: contactState } = contactInfo;
       if (contactInfo.zipApt) {
         zip = contactInfo.zipApt.zip;
         apt = contactInfo.zipApt.apt;
       }
+      const rawCity = directCity || contactCity || data.city;
+      let dynamicPage = page || data.page;
+      if (!dynamicPage && ctx.request.headers?.referer) {
+        try {
+          const refUrl = new URL(ctx.request.headers.referer);
+          dynamicPage = refUrl.pathname;
+        } catch (e) {}
+      }
+
+      const location = resolveLeadLocation({
+        city: rawCity,
+        state: rawState,
+        page: dynamicPage,
+        lat: lat || data.lat,
+        lng: lng || data.lng,
+        phone,
+        source: data.source || "best-quote-modal",
+      });
+
       const nameParts = name.trim().split(/\s+/);
       const firstName = nameParts[0] || "";
       const lastName = nameParts.slice(1).join(" ") || " ";
+
+      const trueSource =
+        utm_source ||
+        (fbclid ? "facebook" : null) ||
+        (gclid || gbraid || wbraid ? "google" : null) ||
+        (data.source && !data.source.includes("page") && !data.source.includes("modal") && !data.source.includes("popup") ? data.source : null) ||
+        "direct";
 
       // Save BestQuote lead into Strapi Database
       await createWebsiteLeadInDb({
@@ -471,9 +538,12 @@ module.exports = {
         address: address || "",
         zip: zip || "",
         apt: apt || "",
-        city: data.city || "",
-        source: data.source || "best-quote-modal",
-        formType: "bestQuote",
+        city: location.cityName,
+        state: location.stateCode,
+        area: location.metroArea,
+        page: location.page,
+        source: trueSource,
+        formType: data.formType || "bestQuote",
         details: rest || {},
         gclid,
         gbraid,
@@ -501,6 +571,8 @@ module.exports = {
       if (address) leadData.Address = address;
       if (zip) leadData.PostalCode = zip;
       if (apt) leadData.Unit = apt;
+      if (location.cityName) leadData.City = location.cityName;
+      if (location.stateCode) leadData.State = location.stateCode;
 
       const valueCountPairs = [];
 
@@ -760,10 +832,13 @@ module.exports = {
           `📢 <b>New Estimate Received!</b>\n\n` +
             `👤 <b>Name:</b> ${name}\n` +
             `📞 <b>Phone:</b> ${phone}\n` +
-            `📧 <b>Email:</b> ${email}\n` +
-            `🏠 <b>Address:</b> ${address}\n` +
-            `📍 <b>ZIP:</b> ${zip}\n` +
-            `🔗 <b>Source:</b> TVProWebsite\n` +
+            (email ? `📧 <b>Email:</b> ${email}\n` : "") +
+            (address ? `🏠 <b>Address:</b> ${address}\n` : "") +
+            (zip ? `📍 <b>ZIP:</b> ${zip}\n` : "") +
+            `🔗 <b>Source:</b> ${trueSource}\n` +
+            `📄 <b>Page:</b> ${location.page}\n` +
+            `🏙️ <b>City:</b> ${location.cityWithState}\n` +
+            `🗺️ <b>Area:</b> ${location.metroArea}\n` +
             campaignLine +
             `📅 <b>Submitted At (Houston):</b> ${formattedTime}` +
             itemsListText,
