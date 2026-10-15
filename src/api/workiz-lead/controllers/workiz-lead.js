@@ -136,6 +136,14 @@ function formatHoustonTime(isoString) {
   }
 }
 
+function escapeHtml(val) {
+  if (val === undefined || val === null) return "";
+  return String(val)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 // Helper function to send data to ProsBuddy API and save response
 async function sendToProsBuddy(
   firstName,
@@ -403,26 +411,26 @@ module.exports = {
 
       const formattedTime = formatHoustonTime(submittedAt);
 
-      const tvCountLine = tvCount ? `📺 <b>Selected TVs:</b> ${tvCount}\n` : "";
-      const timingLine = timing ? `⏱️ <b>Timing:</b> ${timing}\n` : "";
-      const campaignLine = utm_campaign ? `📣 <b>Campaign:</b> ${utm_campaign}\n` : "";
+      const tvCountLine = tvCount ? `📺 <b>Selected TVs:</b> ${escapeHtml(tvCount)}\n` : "";
+      const timingLine = timing ? `⏱️ <b>Timing:</b> ${escapeHtml(timing)}\n` : "";
+      const campaignLine = utm_campaign ? `📣 <b>Campaign:</b> ${escapeHtml(utm_campaign)}\n` : "";
 
       try {
         await sendMessage(
           `📢 <b>New Lead Received!</b>\n\n` +
-            `👤 <b>Name:</b> ${name}\n` +
-            `📞 <b>Phone:</b> ${phone}\n` +
-            (email ? `📧 <b>Email:</b> ${email}\n` : "") +
-            (address ? `🏠 <b>Address:</b> ${address}\n` : "") +
-            (zip ? `📍 <b>ZIP:</b> ${zip}\n` : "") +
+            `👤 <b>Name:</b> ${escapeHtml(name)}\n` +
+            `📞 <b>Phone:</b> ${escapeHtml(phone)}\n` +
+            (email ? `📧 <b>Email:</b> ${escapeHtml(email)}\n` : "") +
+            (address ? `🏠 <b>Address:</b> ${escapeHtml(address)}\n` : "") +
+            (zip ? `📍 <b>ZIP:</b> ${escapeHtml(zip)}\n` : "") +
             tvCountLine +
             timingLine +
-            `🔗 <b>Source:</b> ${trueSource}\n` +
-            `📄 <b>Page:</b> ${location.page}\n` +
-            `🏙️ <b>City:</b> ${location.cityWithState}\n` +
-            `🗺️ <b>Area:</b> ${location.metroArea}\n` +
+            `🔗 <b>Source:</b> ${escapeHtml(trueSource)}\n` +
+            `📄 <b>Page:</b> ${escapeHtml(location.page)}\n` +
+            `🏙️ <b>City:</b> ${escapeHtml(location.cityWithState)}\n` +
+            `🗺️ <b>Area:</b> ${escapeHtml(location.metroArea)}\n` +
             campaignLine +
-            `📅 <b>Submitted At (Houston):</b> ${formattedTime}`,
+            `📅 <b>Submitted At (Houston):</b> ${escapeHtml(formattedTime)}`,
           { parse_mode: "HTML" },
         );
       } catch (tgError) {
@@ -501,6 +509,7 @@ module.exports = {
         apt = contactInfo.zipApt.apt;
       }
       const rawCity = directCity || contactCity || data.city;
+      const rawState = directState || contactState || data.state;
       let dynamicPage = page || data.page;
       if (!dynamicPage && ctx.request.headers?.referer) {
         try {
@@ -818,29 +827,29 @@ module.exports = {
         itemsListText = "\n\n🛒 <b>Selected Items:</b>\n";
         itemsWithPrices.forEach((item) => {
           const countText = item.count > 1 ? ` x${item.count}` : "";
-          itemsListText += `• ${item.name}${countText} — $${item.total.toFixed(2)}\n`;
+          itemsListText += `• ${escapeHtml(item.name)}${countText} — $${item.total.toFixed(2)}\n`;
         });
         itemsListText += `\n💰 <b>Total Price:</b> $${totalPrice.toFixed(2)}`;
       }
 
       const formattedTime = formatHoustonTime(submittedAt);
 
-      const campaignLine = utm_campaign ? `📣 <b>Campaign:</b> ${utm_campaign}\n` : "";
+      const campaignLine = utm_campaign ? `📣 <b>Campaign:</b> ${escapeHtml(utm_campaign)}\n` : "";
 
       try {
         await sendMessage(
           `📢 <b>New Estimate Received!</b>\n\n` +
-            `👤 <b>Name:</b> ${name}\n` +
-            `📞 <b>Phone:</b> ${phone}\n` +
-            (email ? `📧 <b>Email:</b> ${email}\n` : "") +
-            (address ? `🏠 <b>Address:</b> ${address}\n` : "") +
-            (zip ? `📍 <b>ZIP:</b> ${zip}\n` : "") +
-            `🔗 <b>Source:</b> ${trueSource}\n` +
-            `📄 <b>Page:</b> ${location.page}\n` +
-            `🏙️ <b>City:</b> ${location.cityWithState}\n` +
-            `🗺️ <b>Area:</b> ${location.metroArea}\n` +
+            `👤 <b>Name:</b> ${escapeHtml(name)}\n` +
+            `📞 <b>Phone:</b> ${escapeHtml(phone)}\n` +
+            (email ? `📧 <b>Email:</b> ${escapeHtml(email)}\n` : "") +
+            (address ? `🏠 <b>Address:</b> ${escapeHtml(address)}\n` : "") +
+            (zip ? `📍 <b>ZIP:</b> ${escapeHtml(zip)}\n` : "") +
+            `🔗 <b>Source:</b> ${escapeHtml(trueSource)}\n` +
+            `📄 <b>Page:</b> ${escapeHtml(location.page)}\n` +
+            `🏙️ <b>City:</b> ${escapeHtml(location.cityWithState)}\n` +
+            `🗺️ <b>Area:</b> ${escapeHtml(location.metroArea)}\n` +
             campaignLine +
-            `📅 <b>Submitted At (Houston):</b> ${formattedTime}` +
+            `📅 <b>Submitted At (Houston):</b> ${escapeHtml(formattedTime)}` +
             itemsListText,
           { parse_mode: "HTML" },
         );

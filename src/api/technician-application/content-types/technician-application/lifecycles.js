@@ -109,6 +109,14 @@ module.exports = {
         }
       ];
 
+      const escapeHtml = (val) => {
+        if (val === undefined || val === null) return '';
+        return String(val)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+      };
+
       let messageText = `💼 <b>New Technician Application</b>\n`;
       messageText += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
@@ -116,9 +124,9 @@ module.exports = {
         const activeFields = section.fields.filter(f => f.value !== undefined && f.value !== null && f.value !== '');
         
         if (activeFields.length > 0) {
-          messageText += `<b>${section.title}</b>\n`;
+          messageText += `<b>${escapeHtml(section.title)}</b>\n`;
           for (const field of activeFields) {
-            messageText += `• <b>${field.label}:</b> ${field.value}\n`;
+            messageText += `• <b>${escapeHtml(field.label)}:</b> ${escapeHtml(field.value)}\n`;
           }
           messageText += `\n`;
         }
@@ -139,7 +147,7 @@ module.exports = {
       if (utmFields.length > 0) {
         messageText += `<b>🔗 UTM Tracking</b>\n`;
         for (const utm of utmFields) {
-          messageText += `• <b>${utm.label}:</b> <code>${utm.value}</code>\n`;
+          messageText += `• <b>${escapeHtml(utm.label)}:</b> <code>${escapeHtml(utm.value)}</code>\n`;
         }
         messageText += `\n`;
       }
@@ -148,7 +156,7 @@ module.exports = {
       if (entry.file && entry.file.url) {
         const serverUrl = strapi.config.get('server.url') || '';
         const fileUrl = entry.file.url.startsWith('http') ? entry.file.url : `${serverUrl}${entry.file.url}`;
-        messageText += `📁 <b>Attachment:</b> <a href="${fileUrl}">Download File</a>\n\n`;
+        messageText += `📁 <b>Attachment:</b> <a href="${escapeHtml(fileUrl)}">Download File</a>\n\n`;
       }
 
       if (bot) {
