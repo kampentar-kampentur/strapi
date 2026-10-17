@@ -73,7 +73,30 @@ module.exports = {
    * An asynchronous register function that runs before
    * your application is initialized.
    */
-  register(/*{ strapi }*/) {
+  register({ strapi }) {
+    strapi.server.use(async (ctx, next) => {
+      await next();
+
+      // Catch and alert on any /api/* error response (4xx/5xx, e.g. 400 ValidationError)
+      if (
+        ctx.status >= 400 &&
+        ctx.request?.url?.startsWith('/api/') &&
+        !ctx.request.url.startsWith('/api/log-error')
+      ) {
+        const errBody = ctx.body && typeof ctx.body === 'object' ? ctx.body.error || ctx.body : ctx.body;
+        const errName = errBody?.name || 'HttpError';
+        const errMsg = errBody?.message || `HTTP ${ctx.status} on ${ctx.request.method} ${ctx.request.url}`;
+
+        logger.error(`[API ${ctx.status} ${errName}] ${ctx.request.method} ${ctx.request.url}: ${errMsg}`, {
+          status: ctx.status,
+          method: ctx.request.method,
+          url: ctx.request.url,
+          error: errBody,
+          details: errBody?.details || null,
+        });
+      }
+    });
+
     logger.info('Strapi application register phase completed');
   },
 

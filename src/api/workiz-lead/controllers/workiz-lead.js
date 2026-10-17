@@ -239,6 +239,46 @@ async function createWebsiteLeadInDb(leadData) {
       }
     }
 
+    const trackedColumns = [
+      "gclid",
+      "gbraid",
+      "wbraid",
+      "fbclid",
+      "msclkid",
+      "_ga",
+      "_gcl_au",
+      "utm_source",
+      "utm_medium",
+      "utm_campaign",
+      "utm_content",
+      "utm_term",
+    ];
+
+    // Backfill top-level columns and details from touchpoints history so no historical ID is ever missed
+    const touchpoints = Array.isArray(cleanData.details?.touchpoints)
+      ? cleanData.details.touchpoints
+      : [];
+    for (const tp of touchpoints) {
+      const p = tp?.params || {};
+      for (const col of trackedColumns) {
+        if (p[col]) {
+          cleanData[col] = p[col];
+          if (cleanData.details && typeof cleanData.details === "object") {
+            cleanData.details[col] = p[col];
+          }
+        }
+      }
+    }
+
+    // Also sync any tracked column present inside details to top-level column
+    if (cleanData.details && typeof cleanData.details === "object") {
+      for (const col of trackedColumns) {
+        if (!cleanData[col] && cleanData.details[col]) {
+          cleanData[col] = String(cleanData.details[col]);
+        }
+      }
+    }
+
     if (strapi.documents) {
       await strapi.documents("api::website-lead.website-lead").create({
         data: cleanData,
@@ -258,6 +298,50 @@ async function createWebsiteLeadInDb(leadData) {
   } catch (err) {
     strapi.log.error("[Strapi DB] Failed to save website lead:", err.message || err);
   }
+}
+
+function resolveLeadSource({ utm_source, fbclid, gclid, gbraid, wbraid, source, touchpoints }) {
+  if (Array.isArray(touchpoints) && touchpoints.length > 0) {
+    const nonDirect = [];
+    for (const tp of touchpoints) {
+      const s = tp && tp.source;
+      if (s && s !== "direct") {
+        if (nonDirect[nonDirect.length - 1] !== s) {
+          nonDirect.push(s);
+        }
+      }
+    }
+    if (nonDirect.length > 0) {
+      return nonDirect.join(" → ");
+    }
+  }
+  if (source && source.includes("→")) {
+    return source;
+  }
+  return (
+    utm_source ||
+    (fbclid ? "facebook" : null) ||
+    (gclid || gbraid || wbraid ? "google" : null) ||
+    (source && !source.includes("page") && !source.includes("modal") && !source.includes("popup") ? source : null) ||
+    "direct"
+  );
+}
+
+function formatTouchpointsForTelegram(touchpoints, pagesVisited) {
+  let out = "";
+  if (Array.isArray(touchpoints) && touchpoints.length > 1) {
+    const tpLines = touchpoints.map((tp, idx) => {
+      const src = escapeHtml(tp?.source || "direct");
+      const pth = escapeHtml(tp?.path || "/");
+      const cmp = tp?.params?.utm_campaign ? ` [${escapeHtml(tp.params.utm_campaign)}]` : "";
+      return `  ${idx + 1}. <b>${src}</b> (${pth})${cmp}`;
+    });
+    out += `🧭 <b>Touchpoints:</b>\n${tpLines.join("\n")}\n`;
+  }
+  if (Array.isArray(pagesVisited) && pagesVisited.length > 1) {
+    out += `👣 <b>Pages:</b> ${escapeHtml(pagesVisited.join(" → "))}\n`;
+  }
+  return out;
 }
 
 module.exports = {
@@ -352,12 +436,15 @@ module.exports = {
       if (location.cityName) leadData.City = location.cityName;
       if (location.stateCode) leadData.State = location.stateCode;
 
-      const trueSource =
-        utm_source ||
-        (fbclid ? "facebook" : null) ||
-        (gclid || gbraid || wbraid ? "google" : null) ||
-        (source && !source.includes("page") && !source.includes("modal") && !source.includes("popup") ? source : null) ||
-        "direct";
+      const trueSource = resolveLeadSource({
+        utm_source,
+        fbclid,
+        gclid,
+        gbraid,
+        wbraid,
+        source,
+        touchpoints: restExtraParams?.touchpoints,
+      });
 
       // Save lead into Strapi Database (Website Leads Collection)
       await createWebsiteLeadInDb({
@@ -372,7 +459,21 @@ module.exports = {
         page: location.page,
         source: trueSource,
         formType: formType || "bookNow",
-        details: { tvCount: tvCount || null, timing: timing || null, ...restExtraParams },
+        details: {
+          tvCount: tvCount || null,
+          timing: timing || null,
+          ...(fbclid ? { fbclid } : {}),
+          ...(gclid ? { gclid } : {}),
+          ...(gbraid ? { gbraid } : {}),
+          ...(wbraid ? { wbraid } : {}),
+          ...(ctx.request.body.data?.msclkid ? { msclkid: ctx.request.body.data.msclkid } : {}),
+          ...(utm_source ? { utm_source } : {}),
+          ...(utm_medium ? { utm_medium } : {}),
+          ...(utm_campaign ? { utm_campaign } : {}),
+          ...(utm_content ? { utm_content } : {}),
+          ...(utm_term ? { utm_term } : {}),
+          ...restExtraParams,
+        },
         gclid,
         gbraid,
         wbraid,
@@ -415,6 +516,18 @@ module.exports = {
       const timingLine = timing ? `⏱️ <b>Timing:</b> ${escapeHtml(timing)}\n` : "";
       const campaignLine = utm_campaign ? `📣 <b>Campaign:</b> ${escapeHtml(utm_campaign)}\n` : "";
 
+      const clickIdsLines = [
+        fbclid ? `🎯 <b>FBCLID:</b> ${escapeHtml(fbclid)}` : null,
+        gclid ? `🎯 <b>GCLID:</b> ${escapeHtml(gclid)}` : null,
+        gbraid ? `🎯 <b>GBRAID:</b> ${escapeHtml(gbraid)}` : null,
+        wbraid ? `🎯 <b>WBRAID:</b> ${escapeHtml(wbraid)}` : null,
+      ].filter(Boolean).join("\n");
+      const clickIdsLine = clickIdsLines ? `${clickIdsLines}\n` : "";
+      const historyLines = formatTouchpointsForTelegram(
+        restExtraParams?.touchpoints,
+        restExtraParams?.pages_visited,
+      );
+
       try {
         await sendMessage(
           `📢 <b>New Lead Received!</b>\n\n` +
@@ -426,6 +539,8 @@ module.exports = {
             tvCountLine +
             timingLine +
             `🔗 <b>Source:</b> ${escapeHtml(trueSource)}\n` +
+            clickIdsLine +
+            historyLines +
             `📄 <b>Page:</b> ${escapeHtml(location.page)}\n` +
             `🏙️ <b>City:</b> ${escapeHtml(location.cityWithState)}\n` +
             `🗺️ <b>Area:</b> ${escapeHtml(location.metroArea)}\n` +
@@ -532,12 +647,15 @@ module.exports = {
       const firstName = nameParts[0] || "";
       const lastName = nameParts.slice(1).join(" ") || " ";
 
-      const trueSource =
-        utm_source ||
-        (fbclid ? "facebook" : null) ||
-        (gclid || gbraid || wbraid ? "google" : null) ||
-        (data.source && !data.source.includes("page") && !data.source.includes("modal") && !data.source.includes("popup") ? data.source : null) ||
-        "direct";
+      const trueSource = resolveLeadSource({
+        utm_source,
+        fbclid,
+        gclid,
+        gbraid,
+        wbraid,
+        source: data.source,
+        touchpoints: rest?.touchpoints,
+      });
 
       // Save BestQuote lead into Strapi Database
       await createWebsiteLeadInDb({
@@ -553,7 +671,19 @@ module.exports = {
         page: location.page,
         source: trueSource,
         formType: data.formType || "bestQuote",
-        details: rest || {},
+        details: {
+          ...(fbclid ? { fbclid } : {}),
+          ...(gclid ? { gclid } : {}),
+          ...(gbraid ? { gbraid } : {}),
+          ...(wbraid ? { wbraid } : {}),
+          ...(data.msclkid ? { msclkid: data.msclkid } : {}),
+          ...(utm_source ? { utm_source } : {}),
+          ...(utm_medium ? { utm_medium } : {}),
+          ...(utm_campaign ? { utm_campaign } : {}),
+          ...(utm_content ? { utm_content } : {}),
+          ...(utm_term ? { utm_term } : {}),
+          ...(rest || {}),
+        },
         gclid,
         gbraid,
         wbraid,
@@ -836,6 +966,18 @@ module.exports = {
 
       const campaignLine = utm_campaign ? `📣 <b>Campaign:</b> ${escapeHtml(utm_campaign)}\n` : "";
 
+      const clickIdsLines = [
+        fbclid ? `🎯 <b>FBCLID:</b> ${escapeHtml(fbclid)}` : null,
+        gclid ? `🎯 <b>GCLID:</b> ${escapeHtml(gclid)}` : null,
+        gbraid ? `🎯 <b>GBRAID:</b> ${escapeHtml(gbraid)}` : null,
+        wbraid ? `🎯 <b>WBRAID:</b> ${escapeHtml(wbraid)}` : null,
+      ].filter(Boolean).join("\n");
+      const clickIdsLine = clickIdsLines ? `${clickIdsLines}\n` : "";
+      const historyLines = formatTouchpointsForTelegram(
+        rest?.touchpoints,
+        rest?.pages_visited,
+      );
+
       try {
         await sendMessage(
           `📢 <b>New Estimate Received!</b>\n\n` +
@@ -845,6 +987,8 @@ module.exports = {
             (address ? `🏠 <b>Address:</b> ${escapeHtml(address)}\n` : "") +
             (zip ? `📍 <b>ZIP:</b> ${escapeHtml(zip)}\n` : "") +
             `🔗 <b>Source:</b> ${escapeHtml(trueSource)}\n` +
+            clickIdsLine +
+            historyLines +
             `📄 <b>Page:</b> ${escapeHtml(location.page)}\n` +
             `🏙️ <b>City:</b> ${escapeHtml(location.cityWithState)}\n` +
             `🗺️ <b>Area:</b> ${escapeHtml(location.metroArea)}\n` +

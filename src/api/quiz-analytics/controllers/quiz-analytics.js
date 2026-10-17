@@ -58,37 +58,61 @@ module.exports = {
       }
     }
 
-    try {
+    const payloadStr = JSON.stringify(body);
+    const maxAttempts = 2;
+    let lastError = null;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-      const response = await fetch(targetUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': process.env.TVPRO_CALCULATOR_API_KEY || '',
-        },
-        body: JSON.stringify(body),
-        keepalive: true,
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      let responseData = null;
       try {
-        responseData = await response.json();
-      } catch (e) {
-        // Response is not JSON or empty
-      }
+        const response = await fetch(targetUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Connection': 'close',
+            'x-api-key': process.env.TVPRO_CALCULATOR_API_KEY || '',
+          },
+          body: payloadStr,
+          signal: controller.signal,
+        });
 
-      ctx.status = response.status;
-      ctx.body = responseData || { ok: response.ok };
-    } catch (error) {
-      strapi.log.error('Quiz analytics proxy error:', error);
-      ctx.status = 500;
-      ctx.body = { error: 'Failed to forward quiz analytics' };
+        clearTimeout(timeoutId);
+
+        let responseData = null;
+        try {
+          responseData = await response.json();
+        } catch (e) {
+          // Response is not JSON or empty
+        }
+
+        ctx.status = response.status;
+        ctx.body = responseData || { ok: response.ok };
+        return;
+      } catch (error) {
+        clearTimeout(timeoutId);
+        lastError = error;
+        const code = error?.cause?.code || error?.code || '';
+        const isTransient =
+          code === 'ECONNRESET' ||
+          code === 'ETIMEDOUT' ||
+          code === 'EPIPE' ||
+          code === 'UND_ERR_SOCKET' ||
+          error?.message === 'fetch failed';
+
+        if (!isTransient || attempt === maxAttempts) {
+          break;
+        }
+      }
     }
+
+    strapi.log.warn('Quiz analytics proxy transient failure after retry:', {
+      message: lastError?.message,
+      code: lastError?.cause?.code || lastError?.code,
+    });
+    ctx.status = 202;
+    ctx.body = { ok: false, warning: 'Quiz analytics temporarily unavailable' };
   },
 };
 
