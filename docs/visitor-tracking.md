@@ -153,7 +153,8 @@ tvp_<YYMMDD>_<firstSourceCode>_<random8>.<timestamp>
 * `firstLandingPage` / `lastPage` (`string`) — страница первого входа и последняя просмотренная страница.
 * `fbclid`, `gclid`, `gbraid`, `wbraid`, `msclkid`, `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term` — все рекламные идентификаторы (работают по правилу **monotonic merge**: никогда не затираются пустыми значениями при переходах по сайту).
 * `clarityId`, `_fbp`, `_fbc`, `_ga`, `_gcl_au` — идентификаторы систем аналитики.
-* `ip`, `ipCity`, `ipRegion`, `ipCountry` — определяются автоматически на бэкенде из заголовков Cloudflare / прокси (`cf-connecting-ip`, `cf-ipcity`, `cf-ipregion`, `cf-ipcountry`, `x-forwarded-for`).
+* `ip`, `ipCity`, `ipRegion`, `ipCountry` — определяются по трехслойной системе: (1) из заголовков Cloudflare/Vercel прокси, (2) передаются клиентом из `window.__GEO_CITY__` (Edge инъекция Cloudflare Pages), (3) серверный GeoIP фоллбэк по IP адресу.
+* `geoSource` (`string`) — источник определения локации (`cf_edge` — Edge-нода Cloudflare Pages по реальному IP/вышке посетителя, `query_city` — из рекламного URL-параметра `?city=...`, `server_geoip` — резервный серверный GeoIP сервис Strapi).
 * `browserApp` (`string`) — распознанное приложение браузера (`Instagram In-App`, `Facebook In-App`, `Safari iOS`, `Chrome Desktop` и т.д.).
 * `device` (`json`) — детальный технический слепок (`screen`, `viewport`, `timezone`, `language`, `platform`, `hardwareConcurrency`, `deviceMemory`, `connectionType`, `isInAppBrowser`).
 * `touchpoints` (`json`) — массив всех визитов с параметрами URL, временем и реферером.

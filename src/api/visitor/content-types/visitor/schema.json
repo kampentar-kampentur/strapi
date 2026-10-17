@@ -107,6 +107,9 @@
     "ipCountry": {
       "type": "string"
     },
+    "geoSource": {
+      "type": "string"
+    },
     "browserApp": {
       "type": "string"
     },

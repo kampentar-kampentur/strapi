@@ -46,7 +46,77 @@ function parseBody(ctx) {
   return raw;
 }
 
-function extractClientGeo(ctx) {
+const ipGeoCache = new Map();
+
+async function lookupGeoByIp(ip) {
+  if (
+    !ip ||
+    ip === '127.0.0.1' ||
+    ip === '::1' ||
+    ip.startsWith('10.') ||
+    ip.startsWith('192.168.') ||
+    ip.startsWith('172.16.')
+  ) {
+    return null;
+  }
+  if (ipGeoCache.has(ip)) {
+    return ipGeoCache.get(ip);
+  }
+
+  // 1. Primary: ip-api.com
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 2000);
+    const res = await fetch(
+      `http://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,country,region,city`,
+      { signal: controller.signal }
+    );
+    clearTimeout(timer);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.status === 'success') {
+        const result = {
+          ipCity: data.city || null,
+          ipRegion: data.region || null,
+          ipCountry: data.country || null,
+        };
+        ipGeoCache.set(ip, result);
+        return result;
+      }
+    }
+  } catch (err) {
+    // Fall through to secondary provider
+  }
+
+  // 2. Secondary: ipwho.is (HTTPS, free, reliable)
+  try {
+    const controller2 = new AbortController();
+    const timer2 = setTimeout(() => controller2.abort(), 2000);
+    const res2 = await fetch(
+      `https://ipwho.is/${encodeURIComponent(ip)}`,
+      { signal: controller2.signal }
+    );
+    clearTimeout(timer2);
+    if (res2.ok) {
+      const data2 = await res2.json();
+      if (data2 && data2.success) {
+        const result = {
+          ipCity: data2.city || null,
+          ipRegion: data2.region_code || data2.region || null,
+          ipCountry: data2.country_code || data2.country || null,
+        };
+        ipGeoCache.set(ip, result);
+        return result;
+      }
+    }
+  } catch (err2) {
+    // Graceful fallback if both fail
+  }
+
+  return null;
+}
+
+async function extractClientGeo(ctx, payload = {}) {
   const headers = ctx.request?.headers || {};
   const forwarded = headers['x-forwarded-for'];
   const firstForwardedIp =
@@ -59,13 +129,57 @@ function extractClientGeo(ctx) {
     ctx.request?.ip ||
     '';
 
-  const ipCity = headers['cf-ipcity'] || headers['x-vercel-ip-city'] || '';
-  const ipRegion =
-    headers['cf-ipregion'] || headers['cf-region-code'] || headers['x-vercel-ip-country-region'] || '';
-  const ipCountry =
-    headers['cf-ipcountry'] || headers['x-vercel-ip-country'] || '';
+  let geoSource = 'none';
 
-  return { ip, ipCity, ipRegion, ipCountry };
+  // 1. Direct Cloudflare / Vercel proxy headers
+  let ipCity = headers['cf-ipcity'] || headers['x-vercel-ip-city'] || '';
+  let ipRegion =
+    headers['cf-ipregion'] ||
+    headers['cf-region-code'] ||
+    headers['x-vercel-ip-country-region'] ||
+    '';
+  let ipCountry =
+    headers['cf-ipcountry'] || headers['x-vercel-ip-country'] || '';
+  if (ipCity || ipCountry) {
+    geoSource = 'proxy_header';
+  }
+
+  // 2. Client-side Cloudflare Geo (__GEO_CITY__) sent in payload
+  const clientGeo =
+    payload.geo || payload.clientGeo || payload.device?.geo || {};
+  if (!ipCity && clientGeo.city) {
+    ipCity = clientGeo.city;
+    geoSource = clientGeo.source || 'cf_edge';
+  }
+  if (!ipRegion && (clientGeo.region || clientGeo.state)) {
+    ipRegion = clientGeo.region || clientGeo.state;
+    if (geoSource === 'none') geoSource = clientGeo.source || 'cf_edge';
+  }
+  if (!ipCountry && clientGeo.country) {
+    ipCountry = clientGeo.country;
+    if (geoSource === 'none') geoSource = clientGeo.source || 'cf_edge';
+  }
+
+  // 3. Server-side IP lookup fallback if headers & clientGeo are empty or missing fields
+  if ((!ipCity || !ipRegion || !ipCountry) && ip) {
+    const lookup = await lookupGeoByIp(ip);
+    if (lookup) {
+      if (!ipCity && lookup.ipCity) {
+        ipCity = lookup.ipCity;
+        geoSource = 'server_geoip';
+      }
+      if (!ipRegion && lookup.ipRegion) {
+        ipRegion = lookup.ipRegion;
+        if (geoSource === 'none') geoSource = 'server_geoip';
+      }
+      if (!ipCountry && lookup.ipCountry) {
+        ipCountry = lookup.ipCountry;
+        if (geoSource === 'none') geoSource = 'server_geoip';
+      }
+    }
+  }
+
+  return { ip, ipCity, ipRegion, ipCountry, geoSource };
 }
 
 function detectBrowserApp(userAgent = '') {
@@ -131,7 +245,7 @@ module.exports = createCoreController('api::visitor.visitor', ({ strapi }) => ({
         return;
       }
 
-      const geo = extractClientGeo(ctx);
+      const geo = await extractClientGeo(ctx, payload);
       const browserApp =
         payload.device?.browserApp || detectBrowserApp(userAgent);
       const now = new Date();
@@ -218,6 +332,7 @@ module.exports = createCoreController('api::visitor.visitor', ({ strapi }) => ({
             ipCity: geo.ipCity || null,
             ipRegion: geo.ipRegion || null,
             ipCountry: geo.ipCountry || null,
+            geoSource: geo.geoSource || null,
             browserApp,
             userAgent: userAgent || null,
             device: payload.device || {},
@@ -368,6 +483,10 @@ module.exports = createCoreController('api::visitor.visitor', ({ strapi }) => ({
             ipCity: geo.ipCity || existing.ipCity || null,
             ipRegion: geo.ipRegion || existing.ipRegion || null,
             ipCountry: geo.ipCountry || existing.ipCountry || null,
+            geoSource:
+              geo.geoSource && geo.geoSource !== 'none'
+                ? geo.geoSource
+                : existing.geoSource || null,
             browserApp: browserApp || existing.browserApp || null,
             userAgent: userAgent || existing.userAgent || null,
             device:
