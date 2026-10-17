@@ -519,15 +519,6 @@ module.exports = {
       const tvCountLine = tvCount ? `📺 <b>Selected TVs:</b> ${escapeHtml(tvCount)}\n` : "";
       const timingLine = timing ? `⏱️ <b>Timing:</b> ${escapeHtml(timing)}\n` : "";
       const campaignLine = utm_campaign ? `📣 <b>Campaign:</b> ${escapeHtml(utm_campaign)}\n` : "";
-      const visitorIdLine = visitorId ? `🆔 <b>Visitor ID:</b> <code>${escapeHtml(visitorId)}</code>\n` : "";
-
-      const clickIdsLines = [
-        fbclid ? `🎯 <b>FBCLID:</b> ${escapeHtml(fbclid)}` : null,
-        gclid ? `🎯 <b>GCLID:</b> ${escapeHtml(gclid)}` : null,
-        gbraid ? `🎯 <b>GBRAID:</b> ${escapeHtml(gbraid)}` : null,
-        wbraid ? `🎯 <b>WBRAID:</b> ${escapeHtml(wbraid)}` : null,
-      ].filter(Boolean).join("\n");
-      const clickIdsLine = clickIdsLines ? `${clickIdsLines}\n` : "";
 
       try {
         await sendMessage(
@@ -540,8 +531,6 @@ module.exports = {
             tvCountLine +
             timingLine +
             `🔗 <b>Source:</b> ${escapeHtml(trueSource)}\n` +
-            visitorIdLine +
-            clickIdsLine +
             `📄 <b>Page:</b> ${escapeHtml(location.page)}\n` +
             `🏙️ <b>City:</b> ${escapeHtml(location.cityWithState)}\n` +
             `🗺️ <b>Area:</b> ${escapeHtml(location.metroArea)}\n` +
@@ -973,15 +962,6 @@ module.exports = {
       const formattedTime = formatHoustonTime(submittedAt);
 
       const campaignLine = utm_campaign ? `📣 <b>Campaign:</b> ${escapeHtml(utm_campaign)}\n` : "";
-      const visitorIdLine = visitorId ? `🆔 <b>Visitor ID:</b> <code>${escapeHtml(visitorId)}</code>\n` : "";
-
-      const clickIdsLines = [
-        fbclid ? `🎯 <b>FBCLID:</b> ${escapeHtml(fbclid)}` : null,
-        gclid ? `🎯 <b>GCLID:</b> ${escapeHtml(gclid)}` : null,
-        gbraid ? `🎯 <b>GBRAID:</b> ${escapeHtml(gbraid)}` : null,
-        wbraid ? `🎯 <b>WBRAID:</b> ${escapeHtml(wbraid)}` : null,
-      ].filter(Boolean).join("\n");
-      const clickIdsLine = clickIdsLines ? `${clickIdsLines}\n` : "";
 
       try {
         await sendMessage(
@@ -992,8 +972,6 @@ module.exports = {
             (address ? `🏠 <b>Address:</b> ${escapeHtml(address)}\n` : "") +
             (zip ? `📍 <b>ZIP:</b> ${escapeHtml(zip)}\n` : "") +
             `🔗 <b>Source:</b> ${escapeHtml(trueSource)}\n` +
-            visitorIdLine +
-            clickIdsLine +
             `📄 <b>Page:</b> ${escapeHtml(location.page)}\n` +
             `🏙️ <b>City:</b> ${escapeHtml(location.cityWithState)}\n` +
             `🗺️ <b>Area:</b> ${escapeHtml(location.metroArea)}\n` +
