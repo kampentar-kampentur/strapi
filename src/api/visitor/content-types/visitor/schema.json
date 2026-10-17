@@ -1,0 +1,135 @@
+{
+  "kind": "collectionType",
+  "collectionName": "website_visitors",
+  "info": {
+    "singularName": "visitor",
+    "pluralName": "visitors",
+    "displayName": "Visitor",
+    "description": "Stores all website visitors with unique visitorId, touchpoints history, ad click IDs, device info, and key funnel interactions"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "visitorId": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "firstSource": {
+      "type": "string"
+    },
+    "lastSource": {
+      "type": "string"
+    },
+    "conversionPath": {
+      "type": "string"
+    },
+    "visitsCount": {
+      "type": "integer",
+      "default": 1
+    },
+    "eventsCount": {
+      "type": "integer",
+      "default": 0
+    },
+    "hasLead": {
+      "type": "boolean",
+      "default": false
+    },
+    "leadPhones": {
+      "type": "string"
+    },
+    "firstLandingPage": {
+      "type": "string"
+    },
+    "lastPage": {
+      "type": "string"
+    },
+    "firstReferrer": {
+      "type": "string"
+    },
+    "fbclid": {
+      "type": "string"
+    },
+    "gclid": {
+      "type": "string"
+    },
+    "gbraid": {
+      "type": "string"
+    },
+    "wbraid": {
+      "type": "string"
+    },
+    "msclkid": {
+      "type": "string"
+    },
+    "utm_source": {
+      "type": "string"
+    },
+    "utm_medium": {
+      "type": "string"
+    },
+    "utm_campaign": {
+      "type": "string"
+    },
+    "utm_content": {
+      "type": "string"
+    },
+    "utm_term": {
+      "type": "string"
+    },
+    "clarityId": {
+      "type": "string"
+    },
+    "_fbp": {
+      "type": "string"
+    },
+    "_fbc": {
+      "type": "string"
+    },
+    "_ga": {
+      "type": "string"
+    },
+    "_gcl_au": {
+      "type": "string"
+    },
+    "ip": {
+      "type": "string"
+    },
+    "ipCity": {
+      "type": "string"
+    },
+    "ipRegion": {
+      "type": "string"
+    },
+    "ipCountry": {
+      "type": "string"
+    },
+    "browserApp": {
+      "type": "string"
+    },
+    "userAgent": {
+      "type": "text"
+    },
+    "device": {
+      "type": "json"
+    },
+    "touchpoints": {
+      "type": "json"
+    },
+    "pagesVisited": {
+      "type": "json"
+    },
+    "keyEvents": {
+      "type": "json"
+    },
+    "firstSeenAt": {
+      "type": "datetime"
+    },
+    "lastSeenAt": {
+      "type": "datetime"
+    }
+  }
+}

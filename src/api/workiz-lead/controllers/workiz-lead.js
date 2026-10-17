@@ -240,6 +240,7 @@ async function createWebsiteLeadInDb(leadData) {
     }
 
     const trackedColumns = [
+      "visitorId",
       "gclid",
       "gbraid",
       "wbraid",
@@ -254,27 +255,13 @@ async function createWebsiteLeadInDb(leadData) {
       "utm_term",
     ];
 
-    // Backfill top-level columns and details from touchpoints history so no historical ID is ever missed
-    const touchpoints = Array.isArray(cleanData.details?.touchpoints)
-      ? cleanData.details.touchpoints
-      : [];
-    for (const tp of touchpoints) {
-      const p = tp?.params || {};
-      for (const col of trackedColumns) {
-        if (p[col]) {
-          cleanData[col] = p[col];
-          if (cleanData.details && typeof cleanData.details === "object") {
-            cleanData.details[col] = p[col];
-          }
-        }
-      }
-    }
-
-    // Also sync any tracked column present inside details to top-level column
+    // Sync any tracked column present inside details to top-level column and vice versa
     if (cleanData.details && typeof cleanData.details === "object") {
       for (const col of trackedColumns) {
         if (!cleanData[col] && cleanData.details[col]) {
           cleanData[col] = String(cleanData.details[col]);
+        } else if (cleanData[col] && !cleanData.details[col]) {
+          cleanData.details[col] = cleanData[col];
         }
       }
     }
@@ -292,32 +279,60 @@ async function createWebsiteLeadInDb(leadData) {
         data: cleanData,
       });
     }
+
+    // Link lead conversion status to Visitor record if visitorId is present
+    if (cleanData.visitorId) {
+      try {
+        const visitor = await strapi.db
+          .query("api::visitor.visitor")
+          .findOne({ where: { visitorId: cleanData.visitorId } });
+        if (visitor) {
+          const existingPhones = visitor.leadPhones
+            ? visitor.leadPhones.split(",").map((p) => p.trim()).filter(Boolean)
+            : [];
+          if (cleanData.phone && !existingPhones.includes(cleanData.phone)) {
+            existingPhones.push(cleanData.phone);
+          }
+          const keyEvents = Array.isArray(visitor.keyEvents)
+            ? [...visitor.keyEvents]
+            : [];
+          keyEvents.push({
+            type: "form_submit_success",
+            formName: cleanData.formType || "lead_form",
+            action: "submit_success",
+            page: cleanData.page || "/",
+            phone: cleanData.phone || "",
+            name: cleanData.name || "",
+            timestamp: new Date().toISOString(),
+          });
+          await strapi.db.query("api::visitor.visitor").update({
+            where: { id: visitor.id },
+            data: {
+              hasLead: true,
+              leadPhones: existingPhones.join(", "),
+              keyEvents: keyEvents.slice(-100),
+              eventsCount: keyEvents.length,
+              lastSeenAt: new Date(),
+            },
+          });
+        }
+      } catch (visitorErr) {
+        strapi.log.warn(
+          "[Strapi DB] Could not link lead to visitor record:",
+          visitorErr.message || visitorErr
+        );
+      }
+    }
+
     strapi.log.info(
-      `[Strapi DB] Lead successfully saved to website_leads table (${cleanData.name}, ${cleanData.phone})`
+      `[Strapi DB] Lead successfully saved to website_leads table (${cleanData.name}, ${cleanData.phone}, visitorId=${cleanData.visitorId || "none"})`
     );
   } catch (err) {
     strapi.log.error("[Strapi DB] Failed to save website lead:", err.message || err);
   }
 }
 
-function resolveLeadSource({ utm_source, fbclid, gclid, gbraid, wbraid, source, touchpoints }) {
-  if (Array.isArray(touchpoints) && touchpoints.length > 0) {
-    const nonDirect = [];
-    for (const tp of touchpoints) {
-      const s = tp && tp.source;
-      if (s && s !== "direct") {
-        if (nonDirect[nonDirect.length - 1] !== s) {
-          nonDirect.push(s);
-        }
-      }
-    }
-    if (nonDirect.length > 0) {
-      return nonDirect.join(" → ");
-    }
-  }
-  if (source && source.includes("→")) {
-    return source;
-  }
+function resolveLeadSource({ utm_source, fbclid, gclid, gbraid, wbraid, source }) {
   return (
     utm_source ||
     (fbclid ? "facebook" : null) ||
@@ -325,23 +340,6 @@ function resolveLeadSource({ utm_source, fbclid, gclid, gbraid, wbraid, source, 
     (source && !source.includes("page") && !source.includes("modal") && !source.includes("popup") ? source : null) ||
     "direct"
   );
-}
-
-function formatTouchpointsForTelegram(touchpoints, pagesVisited) {
-  let out = "";
-  if (Array.isArray(touchpoints) && touchpoints.length > 1) {
-    const tpLines = touchpoints.map((tp, idx) => {
-      const src = escapeHtml(tp?.source || "direct");
-      const pth = escapeHtml(tp?.path || "/");
-      const cmp = tp?.params?.utm_campaign ? ` [${escapeHtml(tp.params.utm_campaign)}]` : "";
-      return `  ${idx + 1}. <b>${src}</b> (${pth})${cmp}`;
-    });
-    out += `🧭 <b>Touchpoints:</b>\n${tpLines.join("\n")}\n`;
-  }
-  if (Array.isArray(pagesVisited) && pagesVisited.length > 1) {
-    out += `👣 <b>Pages:</b> ${escapeHtml(pagesVisited.join(" → "))}\n`;
-  }
-  return out;
 }
 
 module.exports = {
@@ -436,6 +434,11 @@ module.exports = {
       if (location.cityName) leadData.City = location.cityName;
       if (location.stateCode) leadData.State = location.stateCode;
 
+      const visitorId =
+        ctx.request.body.data?.visitorId ||
+        restExtraParams?.visitorId ||
+        null;
+
       const trueSource = resolveLeadSource({
         utm_source,
         fbclid,
@@ -443,11 +446,11 @@ module.exports = {
         gbraid,
         wbraid,
         source,
-        touchpoints: restExtraParams?.touchpoints,
       });
 
       // Save lead into Strapi Database (Website Leads Collection)
       await createWebsiteLeadInDb({
+        visitorId,
         name,
         phone,
         email: email || "",
@@ -460,6 +463,7 @@ module.exports = {
         source: trueSource,
         formType: formType || "bookNow",
         details: {
+          ...(visitorId ? { visitorId } : {}),
           tvCount: tvCount || null,
           timing: timing || null,
           ...(fbclid ? { fbclid } : {}),
@@ -515,6 +519,7 @@ module.exports = {
       const tvCountLine = tvCount ? `📺 <b>Selected TVs:</b> ${escapeHtml(tvCount)}\n` : "";
       const timingLine = timing ? `⏱️ <b>Timing:</b> ${escapeHtml(timing)}\n` : "";
       const campaignLine = utm_campaign ? `📣 <b>Campaign:</b> ${escapeHtml(utm_campaign)}\n` : "";
+      const visitorIdLine = visitorId ? `🆔 <b>Visitor ID:</b> <code>${escapeHtml(visitorId)}</code>\n` : "";
 
       const clickIdsLines = [
         fbclid ? `🎯 <b>FBCLID:</b> ${escapeHtml(fbclid)}` : null,
@@ -523,10 +528,6 @@ module.exports = {
         wbraid ? `🎯 <b>WBRAID:</b> ${escapeHtml(wbraid)}` : null,
       ].filter(Boolean).join("\n");
       const clickIdsLine = clickIdsLines ? `${clickIdsLines}\n` : "";
-      const historyLines = formatTouchpointsForTelegram(
-        restExtraParams?.touchpoints,
-        restExtraParams?.pages_visited,
-      );
 
       try {
         await sendMessage(
@@ -539,8 +540,8 @@ module.exports = {
             tvCountLine +
             timingLine +
             `🔗 <b>Source:</b> ${escapeHtml(trueSource)}\n` +
+            visitorIdLine +
             clickIdsLine +
-            historyLines +
             `📄 <b>Page:</b> ${escapeHtml(location.page)}\n` +
             `🏙️ <b>City:</b> ${escapeHtml(location.cityWithState)}\n` +
             `🗺️ <b>Area:</b> ${escapeHtml(location.metroArea)}\n` +
@@ -647,6 +648,12 @@ module.exports = {
       const firstName = nameParts[0] || "";
       const lastName = nameParts.slice(1).join(" ") || " ";
 
+      const visitorId =
+        data.visitorId ||
+        rest?.visitorId ||
+        contactInfo?.visitorId ||
+        null;
+
       const trueSource = resolveLeadSource({
         utm_source,
         fbclid,
@@ -654,11 +661,11 @@ module.exports = {
         gbraid,
         wbraid,
         source: data.source,
-        touchpoints: rest?.touchpoints,
       });
 
       // Save BestQuote lead into Strapi Database
       await createWebsiteLeadInDb({
+        visitorId,
         name,
         phone,
         email: email || "",
@@ -672,6 +679,7 @@ module.exports = {
         source: trueSource,
         formType: data.formType || "bestQuote",
         details: {
+          ...(visitorId ? { visitorId } : {}),
           ...(fbclid ? { fbclid } : {}),
           ...(gclid ? { gclid } : {}),
           ...(gbraid ? { gbraid } : {}),
@@ -965,6 +973,7 @@ module.exports = {
       const formattedTime = formatHoustonTime(submittedAt);
 
       const campaignLine = utm_campaign ? `📣 <b>Campaign:</b> ${escapeHtml(utm_campaign)}\n` : "";
+      const visitorIdLine = visitorId ? `🆔 <b>Visitor ID:</b> <code>${escapeHtml(visitorId)}</code>\n` : "";
 
       const clickIdsLines = [
         fbclid ? `🎯 <b>FBCLID:</b> ${escapeHtml(fbclid)}` : null,
@@ -973,10 +982,6 @@ module.exports = {
         wbraid ? `🎯 <b>WBRAID:</b> ${escapeHtml(wbraid)}` : null,
       ].filter(Boolean).join("\n");
       const clickIdsLine = clickIdsLines ? `${clickIdsLines}\n` : "";
-      const historyLines = formatTouchpointsForTelegram(
-        rest?.touchpoints,
-        rest?.pages_visited,
-      );
 
       try {
         await sendMessage(
@@ -987,8 +992,8 @@ module.exports = {
             (address ? `🏠 <b>Address:</b> ${escapeHtml(address)}\n` : "") +
             (zip ? `📍 <b>ZIP:</b> ${escapeHtml(zip)}\n` : "") +
             `🔗 <b>Source:</b> ${escapeHtml(trueSource)}\n` +
+            visitorIdLine +
             clickIdsLine +
-            historyLines +
             `📄 <b>Page:</b> ${escapeHtml(location.page)}\n` +
             `🏙️ <b>City:</b> ${escapeHtml(location.cityWithState)}\n` +
             `🗺️ <b>Area:</b> ${escapeHtml(location.metroArea)}\n` +
